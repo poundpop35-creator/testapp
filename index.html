@@ -7,89 +7,85 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#1e2530;--border:#30363d;
-  --accent:#1f6feb;--accent2:#388bfd;--green:#3fb950;--yellow:#d29922;
-  --red:#f85149;--cyan:#39c5cf;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+:root {
+  --bg:#f5f7fa; --surface:#ffffff; --surface2:#f0f4f8; --border:#e2e8f0; --border2:#cbd5e1;
+  --accent:#1a56db; --accent2:#1e40af;
+  --green:#16a34a; --green-bg:#f0fdf4; --green-br:#bbf7d0;
+  --yellow:#b45309; --yellow-bg:#fffbeb; --yellow-br:#fde68a;
+  --red:#dc2626; --red-bg:#fef2f2; --red-br:#fecaca;
+  --cyan:#0891b2; --cyan-bg:#ecfeff; --cyan-br:#a5f3fc;
+  --text:#0f172a; --text2:#475569; --text3:#94a3b8;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* ── HEADER ── */
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
-.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(26,86,219,.3)}
 .hd-title{font-size:17px;font-weight:700;line-height:1.2}
 .hd-sub{font-size:12px;color:var(--text2)}
 .hd-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.chip{padding:4px 11px;border-radius:20px;font-size:12px;font-family:'IBM Plex Mono',monospace;border:1px solid}
-.chip-blue{background:rgba(31,111,235,0.12);border-color:rgba(31,111,235,0.3);color:var(--accent2)}
-.chip-green{background:rgba(63,185,80,0.1);border-color:rgba(63,185,80,0.25);color:var(--green)}
-.chip-yellow{background:rgba(210,153,34,0.12);border-color:rgba(210,153,34,0.3);color:var(--yellow);font-weight:700}
-.icon-btn{background:none;border:1px solid var(--border);color:var(--text2);font-size:13px;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .2s;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:5px}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.chip{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid;font-family:'IBM Plex Mono',monospace}
+.chip-blue{background:#eff6ff;border-color:#bfdbfe;color:var(--accent)}
+.chip-green{background:var(--green-bg);border-color:var(--green-br);color:var(--green)}
+.icon-btn{background:var(--surface);border:1.5px solid var(--border);color:var(--text2);font-size:13px;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all .2s;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:5px;box-shadow:var(--shadow)}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.icon-btn.active{border-color:var(--yellow-br);color:var(--yellow);background:var(--yellow-bg)}
 
-/* ── LOGIN MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.show{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:380px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6)}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:380px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;transition:color .2s;line-height:1}
 .modal-close:hover{color:var(--text)}
-.modal-icon{font-size:36px;text-align:center;margin-bottom:12px}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:10px}
 .modal-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px}
 .modal-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px}
 .form-group{margin-bottom:16px}
 .form-label{font-size:13px;color:var(--text2);margin-bottom:6px;display:block;font-weight:600}
-.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s}
-.form-input:focus{outline:none;border-color:var(--accent)}
-.form-input.err{border-color:var(--red)}
+.form-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.form-input.err{border-color:var(--red);background:var(--red-bg)}
 .form-error{font-size:12px;color:var(--red);margin-top:5px;display:none}
 .form-error.show{display:block}
 .login-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:8px;font-size:15px;font-family:'Sarabun',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px}
 .login-btn:hover{background:var(--accent2);transform:translateY(-1px)}
-.login-btn:active{transform:translateY(0)}
 
-/* ── ADMIN PANEL ── */
-.admin-bar{background:var(--surface2);border-bottom:2px solid var(--yellow);padding:12px 24px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-bar{background:var(--yellow-bg);border-bottom:2px solid var(--yellow-br);padding:12px 28px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
 .admin-bar.show{display:flex}
-.admin-lbl{font-size:13px;font-weight:700;color:var(--yellow);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.sep{width:1px;height:26px;background:var(--border);flex-shrink:0}
+.admin-lbl{font-size:13px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sep{width:1px;height:26px;background:var(--border2);flex-shrink:0}
 .abtn{border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-family:'Sarabun',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
 .abtn:hover{transform:translateY(-1px)}
 .abtn:disabled{opacity:.35;cursor:not-allowed;transform:none}
 .abtn-blue{background:var(--accent);color:#fff}.abtn-blue:hover{background:var(--accent2)}
-.abtn-green{background:var(--green);color:#0d1117}.abtn-green:hover{background:#56d364}
-.abtn-red{background:var(--red);color:#fff}.abtn-red:hover{background:#ff6b6b}
-.abtn-gray{background:var(--surface);border:1px solid var(--border);color:var(--text2)}.abtn-gray:hover{border-color:var(--accent);color:var(--accent2)}
-.admin-status{font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;flex:1;min-width:200px}
+.abtn-green{background:var(--green);color:#fff}.abtn-green:hover{background:#15803d}
+.abtn-red{background:var(--red);color:#fff}.abtn-red:hover{background:#b91c1c}
+.admin-status{font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;flex:1;min-width:180px}
 #fileInput{display:none}
 
-/* ── MAIN ── */
-.main{padding:20px 24px 48px}
-
-/* ── WELCOME ── */
+.main{padding:24px 28px 48px;max-width:1400px;margin:0 auto}
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62vh;text-align:center;gap:14px;padding:40px}
-.welcome-icon{font-size:60px}
+.welcome-icon{font-size:64px}
 .welcome-title{font-size:22px;font-weight:700;color:var(--text2)}
 .welcome-sub{font-size:14px;color:var(--text3);line-height:1.9;max-width:400px}
 
-/* ── TOOLBAR ── */
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
 .sw{flex:2;min-width:200px;position:relative}
 .sw svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
-.si{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 13px 10px 40px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s}
+.si{width:100%;background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:10px 13px 10px 40px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s;box-shadow:var(--shadow)}
 .si:focus{outline:none;border-color:var(--accent)}
 .si::placeholder{color:var(--text3)}
-.fs{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;min-width:148px}
+.fs{background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:10px 13px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;min-width:148px;box-shadow:var(--shadow)}
 .fs:focus{outline:none;border-color:var(--accent)}
-.rc{font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;white-space:nowrap}
+.rc{font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;white-space:nowrap;box-shadow:var(--shadow)}
 
-/* ── SUMMARY ── */
-.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:18px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.stat-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.stat-header{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 .stat-hotel-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
-.hotel-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.stat-total{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);background:var(--surface2);padding:3px 9px;border-radius:20px}
+.hotel-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.stat-total{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);background:var(--surface2);padding:3px 10px;border-radius:20px}
 .stat-body{padding:12px 16px;display:flex;flex-direction:column;gap:7px}
 .stat-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
 .stat-label{color:var(--text2);display:flex;align-items:center;gap:6px}
@@ -99,24 +95,23 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .dot-c{width:6px;height:6px;border-radius:50%;background:var(--red)}
 .stat-val{font-weight:700;font-family:'IBM Plex Mono',monospace}
 
-/* ── CARDS ── */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-.guest-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
-.guest-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.guest-card.cancelled{opacity:.55;border-color:var(--red)}
+.guest-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s;box-shadow:var(--shadow)}
+.guest-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.guest-card.cancelled{opacity:.6;border-color:var(--red-br)}
 .card-top{padding:14px 16px 11px;border-bottom:1px solid var(--border)}
 .card-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.seq-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:4px}
+.seq-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:4px;border:1px solid var(--border)}
 .type-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
-.type-single{background:rgba(63,185,80,0.15);color:var(--green)}
-.type-twin{background:rgba(57,197,207,0.15);color:var(--cyan)}
-.type-spay{background:rgba(210,153,34,0.15);color:var(--yellow)}
-.type-cancel{background:rgba(248,81,73,0.15);color:var(--red)}
+.type-single{background:var(--green-bg);color:var(--green);border:1px solid var(--green-br)}
+.type-twin{background:var(--cyan-bg);color:var(--cyan);border:1px solid var(--cyan-br)}
+.type-spay{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-br)}
+.type-cancel{background:var(--red-bg);color:var(--red);border:1px solid var(--red-br)}
 .guest-name{font-size:17px;font-weight:700;margin-bottom:3px;line-height:1.3}
-.guest-card.cancelled .guest-name{text-decoration:line-through;color:var(--text2)}
+.guest-card.cancelled .guest-name{text-decoration:line-through;color:var(--text3)}
 .guest-org{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.prov-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:1px 7px;border-radius:4px}
-.rm-box{background:rgba(57,197,207,0.05);border:1px dashed rgba(57,197,207,0.25);border-radius:8px;padding:10px 14px;margin:10px 16px}
+.prov-chip{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:10px;padding:1px 7px;border-radius:4px}
+.rm-box{background:#f0f9ff;border:1px dashed #7dd3fc;border-radius:8px;padding:10px 14px;margin:10px 16px}
 .rm-lbl{font-size:10px;color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
 .rm-name{font-size:14px;font-weight:600}
 .rm-org{font-size:11px;color:var(--text2);margin-top:2px}
@@ -126,34 +121,34 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .ci-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
 .ci-val{font-size:13px;font-weight:600;color:var(--text)}
 .ci-val.waiting{color:var(--yellow);font-style:italic}
-.ci-val.time-val{color:var(--red)}
-.car-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:4px;font-family:'IBM Plex Mono',monospace}
-.card-footer{background:rgba(210,153,34,0.04);border-top:1px solid var(--border);padding:10px 16px}
+.ci-val.time-val{color:var(--red);font-weight:700}
+.car-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);font-size:11px;padding:2px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace}
+.card-footer{background:var(--yellow-bg);border-top:1px solid var(--yellow-br);padding:10px 16px}
 .cf-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px;gap:8px}
 .cf-row:last-child{margin-bottom:0}
 .cf-lbl{color:var(--text2);display:flex;align-items:center;gap:4px;flex-shrink:0}
-.cf-val{color:var(--yellow);font-weight:600;text-align:right;font-size:12px}
-.phone-btn{background:rgba(63,185,80,0.12);border:1px solid rgba(63,185,80,0.3);color:var(--green);font-size:12px;padding:4px 12px;border-radius:6px;font-family:'Sarabun',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .2s;white-space:nowrap;font-weight:600}
-.phone-btn:hover{background:rgba(63,185,80,0.22)}
-
-.empty{text-align:center;padding:60px 24px;color:var(--text2)}
+.cf-val{color:var(--yellow);font-weight:600;font-size:12px;text-align:right}
+.phone-btn{background:var(--green-bg);border:1.5px solid var(--green-br);color:var(--green);font-size:12px;padding:4px 12px;border-radius:6px;font-family:'Sarabun',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;font-weight:700;transition:background .2s;white-space:nowrap}
+.phone-btn:hover{background:#dcfce7}
+.empty{text-align:center;padding:60px 24px;color:var(--text3)}
 .empty-icon{font-size:44px;margin-bottom:12px}
 .empty-txt{font-size:16px}
 
-/* ── LOADING ── */
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .loading-overlay.show{display:flex}
-.spinner{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+.loading-box{background:#fff;border-radius:14px;padding:28px 36px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:var(--shadow-md)}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-txt{font-size:14px;color:var(--text2)}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);color:var(--text);padding:13px 18px;border-radius:10px;font-size:14px;z-index:400;display:none;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.5);border:1px solid var(--border)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);color:var(--text);padding:13px 18px;border-radius:10px;font-size:14px;z-index:400;display:none;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.12);border:1.5px solid var(--border)}
 .toast.show{display:block;animation:tin .3s ease}
-.toast.err{border-color:var(--red)}.toast.ok{border-color:var(--green)}
+.toast.err{border-color:var(--red-br);background:var(--red-bg)}
+.toast.ok{border-color:var(--green-br);background:var(--green-bg)}
 @keyframes tin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .toast-t{font-weight:700;margin-bottom:3px}
-.toast.err .toast-t{color:var(--red)}.toast.ok .toast-t{color:var(--green)}
+.toast.err .toast-t{color:var(--red)}
+.toast.ok .toast-t{color:var(--green)}
 
 @media(max-width:640px){
   .header,.main,.admin-bar{padding-left:14px;padding-right:14px}
@@ -165,16 +160,15 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-txt">กำลังประมวลผลไฟล์...</div>
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-txt" id="loadingTxt">กำลังโหลดข้อมูล...</div>
+  </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-t" id="toastT"></div><div id="toastM"></div></div>
 
-<!-- LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal">
   <div class="modal">
     <button class="modal-close" onclick="closeLogin()">✕</button>
@@ -194,7 +188,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="header">
   <div class="logo">🏨</div>
   <div>
@@ -203,35 +196,29 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="hd-right">
     <span class="chip chip-green" id="updatedChip" style="display:none"></span>
-    <span class="chip chip-blue" id="countChip" style="display:none"></span>
-    <!-- Admin login button (shown when not logged in) -->
-    <button class="icon-btn" id="loginBtn" onclick="openLogin()">🔐 Admin</button>
-    <!-- Logout button (shown when logged in) -->
-    <button class="icon-btn" id="logoutBtn" style="display:none;border-color:var(--yellow);color:var(--yellow)" onclick="doLogout()">🔓 ออกจากระบบ</button>
+    <span class="chip chip-blue"  id="countChip"   style="display:none"></span>
+    <button class="icon-btn"        id="loginBtn"  onclick="openLogin()">🔐 Admin</button>
+    <button class="icon-btn active" id="logoutBtn" style="display:none" onclick="doLogout()">🔓 ออกจากระบบ</button>
   </div>
 </header>
 
-<!-- ADMIN BAR (visible only when logged in) -->
 <div class="admin-bar" id="adminBar">
-  <span class="admin-lbl">⚙️ Admin</span>
+  <span class="admin-lbl">⚙️ Admin Panel</span>
   <div class="sep"></div>
   <button class="abtn abtn-blue" onclick="document.getElementById('fileInput').click()">📂 โหลด Excel</button>
   <input type="file" id="fileInput" accept=".xlsx,.xls"/>
   <span class="admin-status" id="adminStatus">ยังไม่ได้โหลดไฟล์</span>
   <div class="sep"></div>
-  <button class="abtn abtn-green" id="saveBtn" onclick="saveData()" disabled>💾 บันทึกข้อมูล</button>
+  <button class="abtn abtn-green" id="saveBtn" onclick="saveData()" disabled>☁️ บันทึกขึ้น Cloud</button>
   <button class="abtn abtn-red" onclick="clearData()">🗑 ล้างข้อมูล</button>
 </div>
 
-<!-- MAIN -->
-<main class="main" id="mainContent">
-
+<main class="main">
   <div class="welcome" id="welcomeView">
     <div class="welcome-icon">🏨</div>
     <div class="welcome-title">ยังไม่มีข้อมูลผู้เข้าพัก</div>
     <div class="welcome-sub">Admin กรุณาเข้าสู่ระบบเพื่ออัปเดตข้อมูล<br>ผู้เข้าพักจะเห็นรายชื่อและข้อมูลห้องพักที่นี่</div>
   </div>
-
   <div id="guestView" style="display:none">
     <div class="toolbar">
       <div class="sw">
@@ -245,207 +232,177 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
       <div class="rc" id="resultCount">— รายการ</div>
     </div>
     <div class="summary-grid" id="summaryGrid"></div>
-    <div class="cards-grid" id="cardsGrid"></div>
+    <div class="cards-grid"   id="cardsGrid"></div>
     <div class="empty" id="emptyState" style="display:none">
       <div class="empty-icon">🔍</div>
       <div class="empty-txt">ไม่พบข้อมูลที่ตรงกัน</div>
     </div>
   </div>
-
 </main>
 
 <script>
-// ─────────────────────────────────────────────
-// CONFIG
-// ─────────────────────────────────────────────
+const SUPA_URL  = 'https://obxiizjymtcidpqhjbgd.supabase.co';
+const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ieGlpemp5bXRjaWRwcWhqYmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDI5NTgsImV4cCI6MjA4OTU3ODk1OH0.CrGWOEQPUrMrwwKAyudvf6dtNcVB4L0McbMWJsKiEio';
 const ADMIN_USER = 'admin01';
 const ADMIN_PASS = 'Dmsc@1234';
-const STORAGE_KEY = 'dmsc_oh_data';
-const SESSION_KEY = 'dmsc_oh_session';
-const PALETTE = ['#1f6feb','#39c5cf','#3fb950','#d29922','#bc8cff','#ff7b72'];
+const SESSION_KEY = 'dmsc_admin_session';
+const PALETTE = ['#1a56db','#0891b2','#16a34a','#b45309','#7c3aed','#dc2626'];
+const COL = {
+  seq:['ลำดับ','ลำดับที่','no','No'], name1:['ชื่อ - สกุล','ชื่อ-สกุล','ชื่อสกุล','ชื่อ'],
+  dept1:['หน่วยงาน'], prov1:['จังหวัดที่ตั้งของหน่วยงาน','จังหวัด'],
+  type:['ประเภทการเข้าพัก','ประเภท'], name2:['ชื่อ - สกุล__1','ชื่อ-สกุล__1','ชื่อสกุล__1','ชื่อ__1','รูมเมท'],
+  dept2:['หน่วยงาน__1'], prov2:['จังหวัดที่ตั้งของหน่วยงาน__1','จังหวัด__1'],
+  hotel:['โรงแรม'], room:['เลขห้อง','ห้อง'],
+  car:['ทะเบียนรถรับลส่ง\nที่พัก - กรมวิทย์','ทะเบียนรถรับส่ง','ทะเบียนรถ','รถรับส่ง'],
+  time:['เวลา\n(เริ่มออกจากโรงแรมตั้งแต่)','เวลา','เวลาออกเดินทาง'],
+  coord1:['ผู้ประสานงาน ที่ โรงแรม','ผู้ประสานงานโรงแรม'], phone:['ติดต่อ','เบอร์','โทร'],
+  coord2:['ผู้ประสานงาน ที่ กรม','ผู้ประสานงานกรม'], note:['หมายเหตุ']
+};
 
-const COL={seq:['ลำดับ','ลำดับที่','no','No'],name1:['ชื่อ - สกุล','ชื่อ-สกุล','ชื่อสกุล','ชื่อ'],dept1:['หน่วยงาน'],prov1:['จังหวัดที่ตั้งของหน่วยงาน','จังหวัด'],type:['ประเภทการเข้าพัก','ประเภท'],name2:['ชื่อ - สกุล__1','ชื่อ-สกุล__1','ชื่อสกุล__1','ชื่อ__1','รูมเมท'],dept2:['หน่วยงาน__1'],prov2:['จังหวัดที่ตั้งของหน่วยงาน__1','จังหวัด__1'],hotel:['โรงแรม'],room:['เลขห้อง','ห้อง'],car:['ทะเบียนรถรับลส่ง\nที่พัก - กรมวิทย์','ทะเบียนรถรับส่ง','ทะเบียนรถ','รถรับส่ง'],time:['เวลา\n(เริ่มออกจากโรงแรมตั้งแต่)','เวลา','เวลาออกเดินทาง'],coord1:['ผู้ประสานงาน ที่ โรงแรม','ผู้ประสานงานโรงแรม'],phone:['ติดต่อ','เบอร์','โทร'],coord2:['ผู้ประสานงาน ที่ กรม','ผู้ประสานงานกรม'],note:['หมายเหตุ']};
+let guestData=[], hotelColors={}, pendingData=null, isAdmin=false;
 
-let guestData = [];
-let hotelColors = {};
-let pendingData = null;
-let isAdmin = false;
+// ── SUPABASE ──
+async function sbFetch(path, opts={}) {
+  const r = await fetch(SUPA_URL+path, {
+    ...opts,
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})}
+  });
+  if (!r.ok) { const e=await r.json().catch(()=>({})); throw new Error(e.message||r.statusText); }
+  return r.status===204?null:r.json();
+}
+async function cloudLoad() {
+  const rows=await sbFetch('/rest/v1/guests?select=*&limit=1');
+  return (rows&&rows.length)?rows[0].data:null;
+}
+async function cloudSave(payload) {
+  const rows=await sbFetch('/rest/v1/guests?select=id&limit=1');
+  if (!rows||!rows.length) throw new Error('ไม่พบแถวในตาราง guests');
+  await sbFetch(`/rest/v1/guests?id=eq.${rows[0].id}`,{method:'PATCH',body:JSON.stringify({data:payload,updated_at:new Date().toISOString()})});
+}
+async function cloudClear() {
+  const rows=await sbFetch('/rest/v1/guests?select=id&limit=1');
+  if (!rows||!rows.length) return;
+  await sbFetch(`/rest/v1/guests?id=eq.${rows[0].id}`,{method:'PATCH',body:JSON.stringify({data:{guests:[],colors:{},updatedAt:null},updated_at:new Date().toISOString()})});
+}
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-(function init(){
-  // restore session
-  if (sessionStorage.getItem(SESSION_KEY) === 'yes') {
-    isAdmin = true;
-    showAdminUI(true);
-  }
-  // load data
+// ── INIT ──
+(async function(){
+  if (sessionStorage.getItem(SESSION_KEY)==='yes'){isAdmin=true;showAdminUI(true);}
+  showLoading(true,'กำลังโหลดข้อมูลจาก Cloud...');
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const p = JSON.parse(saved);
-      if (p && p.guests && p.guests.length) {
-        guestData = p.guests;
-        hotelColors = p.colors || {};
-        showGuestView(p.updatedAt);
-        return;
-      }
-    }
-  } catch(e){}
-  showWelcome();
+    const d=await cloudLoad();
+    if (d&&d.guests&&d.guests.length){guestData=d.guests;hotelColors=d.colors||{};showGuestView(d.updatedAt);}
+    else showWelcome();
+  } catch(e){showWelcome();showToast('ไม่สามารถโหลดข้อมูลได้',e.message,'err');}
+  showLoading(false);
 })();
 
-// ─────────────────────────────────────────────
-// LOGIN / LOGOUT
-// ─────────────────────────────────────────────
+// ── LOGIN ──
 function openLogin(){
   document.getElementById('loginModal').classList.add('show');
-  document.getElementById('loginUser').focus();
+  ['loginUser','loginPass'].forEach(id=>{document.getElementById(id).value='';document.getElementById(id).classList.remove('err');});
   document.getElementById('loginError').classList.remove('show');
-  document.getElementById('loginUser').classList.remove('err');
-  document.getElementById('loginPass').classList.remove('err');
-  document.getElementById('loginPass').value = '';
+  setTimeout(()=>document.getElementById('loginUser').focus(),100);
 }
-
-function closeLogin(){
-  document.getElementById('loginModal').classList.remove('show');
-}
-
+function closeLogin(){document.getElementById('loginModal').classList.remove('show');}
 function doLogin(){
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    sessionStorage.setItem(SESSION_KEY, 'yes');
-    isAdmin = true;
-    closeLogin();
-    showAdminUI(true);
-    showToast('เข้าสู่ระบบสำเร็จ ✅', 'ยินดีต้อนรับสู่โหมด Admin', 'ok');
+  const u=document.getElementById('loginUser').value.trim(), p=document.getElementById('loginPass').value;
+  if (u===ADMIN_USER&&p===ADMIN_PASS){
+    sessionStorage.setItem(SESSION_KEY,'yes');isAdmin=true;closeLogin();showAdminUI(true);
+    showToast('เข้าสู่ระบบสำเร็จ ✅','ยินดีต้อนรับสู่โหมด Admin','ok');
   } else {
     document.getElementById('loginError').classList.add('show');
-    document.getElementById('loginUser').classList.add('err');
-    document.getElementById('loginPass').classList.add('err');
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginPass').focus();
+    ['loginUser','loginPass'].forEach(id=>document.getElementById(id).classList.add('err'));
+    document.getElementById('loginPass').value='';document.getElementById('loginPass').focus();
   }
 }
-
 function doLogout(){
   if (!confirm('ออกจากระบบ Admin?')) return;
-  sessionStorage.removeItem(SESSION_KEY);
-  isAdmin = false;
-  pendingData = null;
-  showAdminUI(false);
-  document.getElementById('adminStatus').textContent = 'ยังไม่ได้โหลดไฟล์';
-  document.getElementById('saveBtn').disabled = true;
-  document.getElementById('fileInput').value = '';
-  showToast('ออกจากระบบแล้ว', '', 'ok');
+  sessionStorage.removeItem(SESSION_KEY);isAdmin=false;pendingData=null;showAdminUI(false);
+  document.getElementById('adminStatus').textContent='ยังไม่ได้โหลดไฟล์';
+  document.getElementById('saveBtn').disabled=true;document.getElementById('fileInput').value='';
+  showToast('ออกจากระบบแล้ว','','ok');
 }
-
 function showAdminUI(on){
-  document.getElementById('adminBar').classList.toggle('show', on);
-  document.getElementById('loginBtn').style.display = on ? 'none' : '';
-  document.getElementById('logoutBtn').style.display = on ? '' : 'none';
+  document.getElementById('adminBar').classList.toggle('show',on);
+  document.getElementById('loginBtn').style.display=on?'none':'';
+  document.getElementById('logoutBtn').style.display=on?'':'none';
 }
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+document.getElementById('loginModal').addEventListener('click',e=>{if(e.target===document.getElementById('loginModal'))closeLogin();});
 
-// enter key on login
-document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
-// click outside modal to close
-document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeLogin(); });
-
-// ─────────────────────────────────────────────
-// FILE LOAD
-// ─────────────────────────────────────────────
-document.getElementById('fileInput').addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (f) loadExcel(f);
-});
-
+// ── EXCEL ──
+document.getElementById('fileInput').addEventListener('change',e=>{if(e.target.files[0])loadExcel(e.target.files[0]);});
 function loadExcel(file){
   if (!isAdmin) return;
-  showLoading(true);
-  const reader = new FileReader();
-  reader.onload = function(e){
+  showLoading(true,'กำลังอ่านไฟล์ Excel...');
+  const reader=new FileReader();
+  reader.onload=function(e){
     try {
-      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
-      if (!rows.length){ showToast('ไฟล์ว่างเปล่า','ไม่พบข้อมูลในไฟล์','err'); showLoading(false); return; }
-      const mapped = rows.map(mapRow).filter(r => r.seq&&r.seq!=='-'&&r.name1&&r.name1!=='-');
-      if (!mapped.length){ showToast('ไม่พบข้อมูล','กรุณาตรวจสอบชื่อคอลัมน์','err'); showLoading(false); return; }
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+      if (!rows.length){showToast('ไฟล์ว่างเปล่า','ไม่พบข้อมูล','err');showLoading(false);return;}
+      const mapped=rows.map(mapRow).filter(r=>r.seq&&r.seq!=='-'&&r.name1&&r.name1!=='-');
+      if (!mapped.length){showToast('ไม่พบข้อมูล','กรุณาตรวจสอบชื่อคอลัมน์','err');showLoading(false);return;}
       mapped.sort((a,b)=>(parseInt(a.seq)||0)-(parseInt(b.seq)||0));
       const colors={};
       [...new Set(mapped.map(g=>g.hotel).filter(h=>h!=='-'))].forEach((h,i)=>colors[h]=PALETTE[i%PALETTE.length]);
-      pendingData = {guests:mapped, colors};
+      pendingData={guests:mapped,colors};
       showLoading(false);
-      document.getElementById('adminStatus').textContent = `✅ โหลดแล้ว ${mapped.length} รายการ จาก "${file.name}"`;
-      document.getElementById('saveBtn').disabled = false;
-      // preview
-      guestData = mapped; hotelColors = colors;
-      showGuestView(null);
-      showToast('โหลดสำเร็จ', `พบ ${mapped.length} รายการ — กด "บันทึกข้อมูล" เพื่อเผยแพร่`, 'ok');
-    } catch(err){ showToast('เกิดข้อผิดพลาด','อ่านไฟล์ไม่ได้: '+err.message,'err'); showLoading(false); }
+      document.getElementById('adminStatus').textContent=`✅ โหลดแล้ว ${mapped.length} รายการ — "${file.name}"`;
+      document.getElementById('saveBtn').disabled=false;
+      guestData=mapped;hotelColors=colors;showGuestView(null);
+      showToast('โหลดสำเร็จ',`พบ ${mapped.length} รายการ — กด "บันทึกขึ้น Cloud" เพื่อเผยแพร่`,'ok');
+    } catch(err){showToast('เกิดข้อผิดพลาด',err.message,'err');showLoading(false);}
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ─────────────────────────────────────────────
-// SAVE / CLEAR
-// ─────────────────────────────────────────────
-function saveData(){
-  if (!isAdmin || !pendingData) return;
-  const now = new Date();
-  const ds = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()+543} ${String(now.getHours()).padStart(2,'0')}.${String(now.getMinutes()).padStart(2,'0')} น.`;
+// ── SAVE / CLEAR ──
+async function saveData(){
+  if (!isAdmin||!pendingData) return;
+  showLoading(true,'กำลังบันทึกขึ้น Cloud...');
+  const now=new Date();
+  const ds=`${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()+543} ${String(now.getHours()).padStart(2,'0')}.${String(now.getMinutes()).padStart(2,'0')} น.`;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({guests:pendingData.guests, colors:pendingData.colors, updatedAt:ds}));
-    guestData = pendingData.guests; hotelColors = pendingData.colors;
-    pendingData = null;
-    document.getElementById('saveBtn').disabled = true;
-    document.getElementById('adminStatus').textContent = `✅ บันทึกแล้ว — อัปเดต ${ds}`;
-    showGuestView(ds);
-    showToast('บันทึกสำเร็จ! 🎉', 'ผู้เข้าพักทุกคนจะเห็นข้อมูลล่าสุดแล้ว', 'ok');
-  } catch(e){ showToast('บันทึกไม่ได้','Storage อาจเต็ม ลองล้างข้อมูลเก่าก่อน','err'); }
+    await cloudSave({guests:pendingData.guests,colors:pendingData.colors,updatedAt:ds});
+    guestData=pendingData.guests;hotelColors=pendingData.colors;pendingData=null;
+    document.getElementById('saveBtn').disabled=true;
+    document.getElementById('adminStatus').textContent=`☁️ บันทึกแล้ว — ${ds}`;
+    showGuestView(ds);showLoading(false);
+    showToast('บันทึกสำเร็จ! 🎉','ผู้เข้าพักทุกคนจะเห็นข้อมูลล่าสุดทันที','ok');
+  } catch(e){showLoading(false);showToast('บันทึกไม่สำเร็จ',e.message,'err');}
 }
-
-function clearData(){
+async function clearData(){
   if (!isAdmin) return;
-  if (!confirm('ลบข้อมูลทั้งหมดออกจากระบบ?\nผู้เข้าพักจะไม่เห็นรายชื่อจนกว่าจะโหลดไฟล์ใหม่')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  guestData=[]; hotelColors={}; pendingData=null;
-  document.getElementById('saveBtn').disabled=true;
-  document.getElementById('adminStatus').textContent='ยังไม่ได้โหลดไฟล์';
-  document.getElementById('fileInput').value='';
-  showWelcome();
-  showToast('ล้างข้อมูลแล้ว','','ok');
+  if (!confirm('ลบข้อมูลทั้งหมดออกจาก Cloud?\nผู้เข้าพักจะไม่เห็นรายชื่อจนกว่าจะโหลดไฟล์ใหม่')) return;
+  showLoading(true,'กำลังล้างข้อมูล...');
+  try {
+    await cloudClear();guestData=[];hotelColors={};pendingData=null;
+    document.getElementById('saveBtn').disabled=true;
+    document.getElementById('adminStatus').textContent='ยังไม่ได้โหลดไฟล์';
+    document.getElementById('fileInput').value='';showWelcome();showLoading(false);
+    showToast('ล้างข้อมูลแล้ว','','ok');
+  } catch(e){showLoading(false);showToast('ล้างข้อมูลไม่สำเร็จ',e.message,'err');}
 }
 
-// ─────────────────────────────────────────────
-// VIEWS
-// ─────────────────────────────────────────────
+// ── VIEWS ──
 function showWelcome(){
   document.getElementById('welcomeView').style.display='flex';
   document.getElementById('guestView').style.display='none';
   document.getElementById('updatedChip').style.display='none';
   document.getElementById('countChip').style.display='none';
 }
-
 function showGuestView(updatedAt){
   document.getElementById('welcomeView').style.display='none';
   document.getElementById('guestView').style.display='block';
-  if (updatedAt) {
-    const uc=document.getElementById('updatedChip');
-    uc.textContent='🕐 '+updatedAt; uc.style.display='inline';
-  }
-  const cc=document.getElementById('countChip');
-  cc.textContent=guestData.length+' รายการ'; cc.style.display='inline';
-  populateFilters();
-  renderSummary(guestData);
-  renderCards(guestData);
+  if (updatedAt){const uc=document.getElementById('updatedChip');uc.textContent='🕐 '+updatedAt;uc.style.display='inline';}
+  const cc=document.getElementById('countChip');cc.textContent=guestData.length+' รายการ';cc.style.display='inline';
+  populateFilters();renderSummary(guestData);renderCards(guestData);
 }
 
-// ─────────────────────────────────────────────
-// DATA / RENDER
-// ─────────────────────────────────────────────
+// ── DATA ──
 function getVal(row,keys){for(const k of keys){if(row[k]!==undefined&&row[k]!==null&&row[k]!=='')return String(row[k]).trim();}return '-';}
 function mapRow(row){return{seq:getVal(row,COL.seq),name1:getVal(row,COL.name1),dept1:getVal(row,COL.dept1),prov1:getVal(row,COL.prov1),type:getVal(row,COL.type),name2:getVal(row,COL.name2),dept2:getVal(row,COL.dept2),prov2:getVal(row,COL.prov2),hotel:getVal(row,COL.hotel),room:getVal(row,COL.room),car:getVal(row,COL.car),time:getVal(row,COL.time),coord1:getVal(row,COL.coord1),phone:getVal(row,COL.phone),coord2:getVal(row,COL.coord2),note:getVal(row,COL.note)};}
 
@@ -455,36 +412,31 @@ function populateFilters(){
   const pf=document.getElementById('provinceFilter');pf.innerHTML='<option value="">ทุกจังหวัด</option>';provs.forEach(p=>pf.innerHTML+=`<option value="${p}">${p}</option>`);
   const hf=document.getElementById('hotelFilter');hf.innerHTML='<option value="">ทุกโรงแรม</option>';hotels.forEach(h=>hf.innerHTML+=`<option value="${h}">${h}</option>`);
 }
-
 function renderSummary(data){
   const map={};
   data.forEach(g=>{const h=g.hotel||'ไม่ระบุ';if(!map[h])map[h]={total:0,single:0,twin:0,singlePay:0,cancelled:0};if(g.name1.includes('ยกเลิก'))map[h].cancelled++;else if(g.type==='พักคู่')map[h].twin++;else if(g.type.includes('จ่ายส่วนต่าง'))map[h].singlePay++;else map[h].single++;map[h].total++;});
-  document.getElementById('summaryGrid').innerHTML=Object.entries(map).map(([hotel,s])=>{const color=hotelColors[hotel]||'#8b949e';return`<div class="stat-card"><div class="stat-header"><div class="stat-hotel-name"><div class="hotel-dot" style="background:${color}"></div>${hotel}</div><div class="stat-total">รวม ${s.total} ห้อง</div></div><div class="stat-body">${s.single?`<div class="stat-row"><span class="stat-label"><div class="dot-s"></div>พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${s.single}</span></div>`:''} ${s.twin?`<div class="stat-row"><span class="stat-label"><div class="dot-t"></div>พักคู่</span><span class="stat-val" style="color:var(--cyan)">${s.twin}</span></div>`:''} ${s.singlePay?`<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div>พักเดี่ยว+ส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${s.singlePay}</span></div>`:''} ${s.cancelled?`<div class="stat-row"><span class="stat-label"><div class="dot-c"></div>ยกเลิก</span><span class="stat-val" style="color:var(--red)">${s.cancelled}</span></div>`:''}</div></div>`;}).join('');
+  document.getElementById('summaryGrid').innerHTML=Object.entries(map).map(([hotel,s])=>{const color=hotelColors[hotel]||'#64748b';return`<div class="stat-card"><div class="stat-header"><div class="stat-hotel-name"><div class="hotel-dot" style="background:${color}"></div>${hotel}</div><div class="stat-total">รวม ${s.total} ห้อง</div></div><div class="stat-body">${s.single?`<div class="stat-row"><span class="stat-label"><div class="dot-s"></div>พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${s.single}</span></div>`:''} ${s.twin?`<div class="stat-row"><span class="stat-label"><div class="dot-t"></div>พักคู่</span><span class="stat-val" style="color:var(--cyan)">${s.twin}</span></div>`:''} ${s.singlePay?`<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div>พักเดี่ยว+ส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${s.singlePay}</span></div>`:''} ${s.cancelled?`<div class="stat-row"><span class="stat-label"><div class="dot-c"></div>ยกเลิก</span><span class="stat-val" style="color:var(--red)">${s.cancelled}</span></div>`:''}</div></div>`;}).join('');
 }
-
 function buildCard(g){
   const ic=g.name1.includes('ยกเลิก'),it=g.type==='พักคู่';
   const badge=ic?'<span class="type-badge type-cancel">ยกเลิกห้อง</span>':g.type==='พักเดี่ยว'?'<span class="type-badge type-single">พักเดี่ยว</span>':it?'<span class="type-badge type-twin">พักคู่</span>':g.type.includes('จ่ายส่วนต่าง')?'<span class="type-badge type-spay">เดี่ยว+ส่วนต่าง</span>':`<span class="type-badge">${g.type}</span>`;
   const rc=(g.room==='รอเช็คอิน'||g.room==='รอ'||g.room==='-')?'waiting':'';
   const rd=g.room==='รอ'?'รอเช็คอิน':g.room;
-  const hc=hotelColors[g.hotel]||'#8b949e';
-  const rm=(it&&g.name2&&g.name2!=='-')?`<div class="rm-box"><div class="rm-lbl">👥 ผู้เข้าพักร่วม</div><div class="rm-name">${g.name2}</div><div class="rm-org">${g.dept2} · ${g.prov2}</div></div>`:'';
+  const hc=hotelColors[g.hotel]||'#64748b';
+  const rm=(it&&g.name2&&g.name2!=='-')?`<div class="rm-box"><div class="rm-lbl">👥 ผู้เข้าพักร่วม (รูมเมท)</div><div class="rm-name">${g.name2}</div><div class="rm-org">${g.dept2} · ${g.prov2}</div></div>`:'';
   const phoneRaw=g.phone!=='-'?g.phone.replace(/[^0-9]/g,''):'';
   const phoneLink=phoneRaw?`<a class="phone-btn" href="tel:${phoneRaw}">📞 ${g.phone}</a>`:'';
-  const footer=(g.coord1!=='-'||g.coord2!=='-'||phoneLink)?`<div class="card-footer">${g.coord1!=='-'?`<div class="cf-row"><span class="cf-lbl">🏨 ประสานงานโรงแรม</span><span class="cf-val">${g.coord1}</span></div>`:''} ${g.coord2!=='-'?`<div class="cf-row"><span class="cf-lbl">🏢 ประสานงานกรม</span><span class="cf-val">${g.coord2}</span></div>`:''} ${phoneLink?`<div class="cf-row"><span class="cf-lbl">📞 เบอร์ติดต่อ</span>${phoneLink}</div>`:''}</div>`:'';
-  return`<div class="guest-card ${ic?'cancelled':''}"><div class="card-top" style="border-left:3px solid ${hc};padding-left:13px"><div class="card-top-row"><span class="seq-badge">#${g.seq}</span>${badge}</div><div class="guest-name">${g.name1}</div><div class="guest-org">${g.dept1!=='-'?`<span>${g.dept1}</span>`:''}${g.prov1!=='-'?`<span class="prov-chip">${g.prov1}</span>`:''}</div></div>${rm}<div class="card-info"><div class="ci"><div class="ci-lbl">🏨 โรงแรม</div><div class="ci-val" style="color:${hc}">${g.hotel}</div></div><div class="ci"><div class="ci-lbl">🔑 เลขห้อง</div><div class="ci-val ${rc}">${rd}</div></div><div class="ci"><div class="ci-lbl">🚌 รถรับส่ง</div><div class="ci-val"><span class="car-tag">${g.car}</span></div></div><div class="ci"><div class="ci-lbl">⏰ เวลาออกเดินทาง</div><div class="ci-val time-val">${g.time}</div></div>${g.note&&g.note!=='-'?`<div class="ci full"><div class="ci-lbl">📝 หมายเหตุ</div><div class="ci-val" style="color:var(--text2);font-weight:400;font-style:italic">${g.note}</div></div>`:''}</div>${footer}</div>`;
+  const footer=(g.coord1!=='-'||g.coord2!=='-'||phoneLink)?`<div class="card-footer">${g.coord1!=='-'?`<div class="cf-row"><span class="cf-lbl">🏨 ประสานงานโรงแรม</span><span class="cf-val">${g.coord1}</span></div>`:''} ${g.coord2!=='-'?`<div class="cf-row"><span class="cf-lbl">🏢 ประสานงานกรม</span><span class="cf-val">${g.coord2}</span></div>`:''} ${phoneLink?`<div class="cf-row"><span class="cf-lbl">เบอร์ติดต่อ</span>${phoneLink}</div>`:''}</div>`:'';
+  return`<div class="guest-card ${ic?'cancelled':''}"><div class="card-top" style="border-left:3px solid ${hc};padding-left:13px"><div class="card-top-row"><span class="seq-badge">#${g.seq}</span>${badge}</div><div class="guest-name">${g.name1}</div><div class="guest-org">${g.dept1!=='-'?`<span>${g.dept1}</span>`:''}${g.prov1!=='-'?`<span class="prov-chip">${g.prov1}</span>`:''}</div></div>${rm}<div class="card-info"><div class="ci"><div class="ci-lbl">🏨 โรงแรม</div><div class="ci-val" style="color:${hc};font-weight:700">${g.hotel}</div></div><div class="ci"><div class="ci-lbl">🔑 เลขห้อง</div><div class="ci-val ${rc}">${rd}</div></div><div class="ci"><div class="ci-lbl">🚌 รถรับส่ง</div><div class="ci-val"><span class="car-tag">${g.car}</span></div></div><div class="ci"><div class="ci-lbl">⏰ เวลาออกเดินทาง</div><div class="ci-val time-val">${g.time}</div></div>${g.note&&g.note!=='-'?`<div class="ci full"><div class="ci-lbl">📝 หมายเหตุ</div><div class="ci-val" style="color:var(--text2);font-weight:400;font-style:italic">${g.note}</div></div>`:''}</div>${footer}</div>`;
 }
-
 function renderCards(data){
   document.getElementById('resultCount').textContent=`${data.length} รายการ`;
-  if(!data.length){document.getElementById('cardsGrid').innerHTML='';document.getElementById('emptyState').style.display='block';return;}
+  if (!data.length){document.getElementById('cardsGrid').innerHTML='';document.getElementById('emptyState').style.display='block';return;}
   document.getElementById('emptyState').style.display='none';
   document.getElementById('cardsGrid').innerHTML=data.map(buildCard).join('');
 }
 
-// ─────────────────────────────────────────────
-// FILTER
-// ─────────────────────────────────────────────
+// ── FILTER ──
 function applyFilters(){
   const s=document.getElementById('searchInput').value.toLowerCase().trim();
   const p=document.getElementById('provinceFilter').value;
@@ -500,16 +452,13 @@ document.getElementById('searchInput').addEventListener('input',applyFilters);
 document.getElementById('provinceFilter').addEventListener('change',applyFilters);
 document.getElementById('hotelFilter').addEventListener('change',applyFilters);
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-function showLoading(s){document.getElementById('loadingOverlay').classList.toggle('show',s);}
+// ── HELPERS ──
+function showLoading(show,txt='กำลังโหลด...'){document.getElementById('loadingTxt').textContent=txt;document.getElementById('loadingOverlay').classList.toggle('show',show);}
 function showToast(title,msg,type=''){
   const t=document.getElementById('toast');
-  document.getElementById('toastT').textContent=title;
-  document.getElementById('toastM').textContent=msg;
+  document.getElementById('toastT').textContent=title;document.getElementById('toastM').textContent=msg;
   t.className='toast show '+(type==='err'?'err':type==='ok'?'ok':'');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),4000);
+  clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('show'),4500);
 }
 </script>
 </body>
