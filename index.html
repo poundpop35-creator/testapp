@@ -1,1093 +1,515 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMSC Open House — ระบบจัดการผู้เข้าพัก</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        :root {
-            --bg: #0d1117;
-            --surface: #161b22;
-            --surface2: #1e2530;
-            --border: #30363d;
-            --accent: #1f6feb;
-            --accent2: #388bfd;
-            --green: #3fb950;
-            --yellow: #d29922;
-            --red: #f85149;
-            --cyan: #39c5cf;
-            --text: #e6edf3;
-            --text2: #8b949e;
-            --text3: #484f58;
-            --hotel1: #1f6feb;
-            --hotel2: #39c5cf;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* ===== HEADER ===== */
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 32px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), var(--cyan));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .header-sub {
-            font-size: 13px;
-            color: var(--text2);
-        }
-
-        .header-badge {
-            margin-left: auto;
-            background: rgba(31,111,235,0.15);
-            border: 1px solid rgba(31,111,235,0.3);
-            color: var(--accent2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* ===== UPLOAD ZONE ===== */
-        .upload-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 73px);
-            padding: 40px;
-            transition: all 0.3s;
-        }
-
-        .upload-section.hidden {
-            display: none;
-        }
-
-        .upload-card {
-            background: var(--surface);
-            border: 2px dashed var(--border);
-            border-radius: 20px;
-            padding: 64px 48px;
-            text-align: center;
-            max-width: 560px;
-            width: 100%;
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .upload-card:hover, .upload-card.dragover {
-            border-color: var(--accent);
-            background: rgba(31,111,235,0.05);
-            transform: translateY(-2px);
-        }
-
-        .upload-icon {
-            font-size: 56px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .upload-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .upload-desc {
-            font-size: 14px;
-            color: var(--text2);
-            margin-bottom: 28px;
-            line-height: 1.7;
-        }
-
-        .upload-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: 'Sarabun', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upload-btn:hover {
-            background: var(--accent2);
-            transform: translateY(-1px);
-        }
-
-        #fileInput { display: none; }
-
-        .upload-hint {
-            margin-top: 20px;
-            font-size: 12px;
-            color: var(--text3);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .col-guide {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px 24px;
-            margin-top: 28px;
-            text-align: left;
-            max-width: 560px;
-            width: 100%;
-        }
-
-        .col-guide-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text2);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .col-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .col-tag {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--cyan);
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .col-tag.required {
-            border-color: rgba(57,197,207,0.4);
-            background: rgba(57,197,207,0.08);
-        }
-
-        /* ===== MAIN APP ===== */
-        .app-section {
-            display: none;
-            padding: 24px 32px 40px;
-        }
-
-        .app-section.visible {
-            display: block;
-        }
-
-        /* TOOLBAR */
-        .toolbar {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .search-wrap {
-            flex: 2;
-            min-width: 220px;
-            position: relative;
-        }
-
-        .search-wrap svg {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text3);
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 14px 10px 42px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Sarabun', sans-serif;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .search-input::placeholder { color: var(--text3); }
-
-        .filter-select {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Sarabun', sans-serif;
-            cursor: pointer;
-            min-width: 160px;
-            transition: border-color 0.2s;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .reload-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text2);
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: 'Sarabun', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .reload-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent2);
-        }
-
-        .result-count {
-            font-size: 13px;
-            color: var(--text2);
-            font-family: 'IBM Plex Mono', monospace;
-            padding: 10px 14px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            white-space: nowrap;
-        }
-
-        /* SUMMARY CARDS */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .stat-header {
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-hotel-name {
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .hotel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .stat-total {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 12px;
-            color: var(--text2);
-            background: var(--surface2);
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-
-        .stat-body {
-            padding: 14px 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-        }
-
-        .stat-label {
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .dot-s { width:6px; height:6px; border-radius:50%; background: var(--green); }
-        .dot-t { width:6px; height:6px; border-radius:50%; background: var(--cyan); }
-        .dot-sp { width:6px; height:6px; border-radius:50%; background: var(--yellow); }
-        .dot-c { width:6px; height:6px; border-radius:50%; background: var(--red); }
-
-        .stat-val {
-            font-weight: 700;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* GUEST CARDS */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 16px;
-        }
-
-        .guest-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-
-        .guest-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .guest-card.cancelled {
-            opacity: 0.6;
-            border-color: var(--red);
-        }
-
-        .card-top {
-            padding: 16px 18px 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .seq-badge {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 11px;
-            color: var(--text3);
-            background: var(--surface2);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .type-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-
-        .type-single { background: rgba(63,185,80,0.15); color: var(--green); }
-        .type-twin { background: rgba(57,197,207,0.15); color: var(--cyan); }
-        .type-single-pay { background: rgba(210,153,34,0.15); color: var(--yellow); }
-        .type-cancel { background: rgba(248,81,73,0.15); color: var(--red); }
-
-        .guest-name {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-
-        .guest-card.cancelled .guest-name {
-            text-decoration: line-through;
-            color: var(--text2);
-        }
-
-        .guest-org {
-            font-size: 12px;
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .prov-chip {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text2);
-            font-size: 10px;
-            padding: 1px 7px;
-            border-radius: 4px;
-        }
-
-        /* Roommate */
-        .roommate-box {
-            background: rgba(57,197,207,0.05);
-            border: 1px dashed rgba(57,197,207,0.25);
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin: 12px 18px;
-        }
-
-        .rm-label {
-            font-size: 10px;
-            color: var(--cyan);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        .rm-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .rm-org {
-            font-size: 11px;
-            color: var(--text2);
-            margin-top: 2px;
-        }
-
-        /* Card details */
-        .card-details {
-            padding: 12px 18px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .detail-row {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .detail-row.full { grid-column: 1 / -1; }
-
-        .detail-lbl {
-            font-size: 10px;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .detail-val {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .detail-val.room-waiting { color: var(--yellow); font-style: italic; }
-        .detail-val.time { color: var(--red); }
-
-        .car-chip {
-            display: inline-block;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* Coordinator footer */
-        .card-footer {
-            background: rgba(210,153,34,0.05);
-            border-top: 1px solid var(--border);
-            padding: 10px 18px;
-        }
-
-        .coord-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .coord-row:last-child { margin-bottom: 0; }
-
-        .coord-lbl {
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .coord-val {
-            color: var(--yellow);
-            font-weight: 600;
-        }
-
-        .phone-chip {
-            background: rgba(210,153,34,0.1);
-            border: 1px solid rgba(210,153,34,0.2);
-            color: var(--yellow);
-            font-size: 11px;
-            padding: 1px 8px;
-            border-radius: 4px;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 80px 40px;
-            color: var(--text2);
-        }
-
-        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
-        .empty-state-text { font-size: 16px; }
-
-        /* Loading */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(13,17,23,0.85);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .loading-overlay.show { display: flex; }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-text {
-            font-size: 14px;
-            color: var(--text2);
-        }
-
-        /* Error toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--surface);
-            border: 1px solid var(--red);
-            color: var(--text);
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            z-index: 1000;
-            display: none;
-            max-width: 360px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        }
-
-        .toast.show { display: block; animation: slideIn 0.3s ease; }
-
-        @keyframes slideIn {
-            from { opacity:0; transform: translateY(20px); }
-            to { opacity:1; transform: translateY(0); }
-        }
-
-        .toast-title {
-            font-weight: 700;
-            color: var(--red);
-            margin-bottom: 4px;
-        }
-
-        /* Responsive */
-        @media (max-width: 640px) {
-            .header { padding: 12px 16px; }
-            .app-section { padding: 16px; }
-            .upload-card { padding: 40px 24px; }
-            .cards-grid { grid-template-columns: 1fr; }
-            .card-details { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMSC Open House — รายชื่อผู้เข้าพัก</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1e2530;--border:#30363d;
+  --accent:#1f6feb;--accent2:#388bfd;--green:#3fb950;--yellow:#d29922;
+  --red:#f85149;--cyan:#39c5cf;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── HEADER ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.hd-title{font-size:17px;font-weight:700;line-height:1.2}
+.hd-sub{font-size:12px;color:var(--text2)}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.chip{padding:4px 11px;border-radius:20px;font-size:12px;font-family:'IBM Plex Mono',monospace;border:1px solid}
+.chip-blue{background:rgba(31,111,235,0.12);border-color:rgba(31,111,235,0.3);color:var(--accent2)}
+.chip-green{background:rgba(63,185,80,0.1);border-color:rgba(63,185,80,0.25);color:var(--green)}
+.chip-yellow{background:rgba(210,153,34,0.12);border-color:rgba(210,153,34,0.3);color:var(--yellow);font-weight:700}
+.icon-btn{background:none;border:1px solid var(--border);color:var(--text2);font-size:13px;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .2s;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:5px}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* ── LOGIN MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:380px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:12px}
+.modal-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:13px;color:var(--text2);margin-bottom:6px;display:block;font-weight:600}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--accent)}
+.form-input.err{border-color:var(--red)}
+.form-error{font-size:12px;color:var(--red);margin-top:5px;display:none}
+.form-error.show{display:block}
+.login-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:8px;font-size:15px;font-family:'Sarabun',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px}
+.login-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.login-btn:active{transform:translateY(0)}
+
+/* ── ADMIN PANEL ── */
+.admin-bar{background:var(--surface2);border-bottom:2px solid var(--yellow);padding:12px 24px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-bar.show{display:flex}
+.admin-lbl{font-size:13px;font-weight:700;color:var(--yellow);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.sep{width:1px;height:26px;background:var(--border);flex-shrink:0}
+.abtn{border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-family:'Sarabun',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.abtn:hover{transform:translateY(-1px)}
+.abtn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.abtn-blue{background:var(--accent);color:#fff}.abtn-blue:hover{background:var(--accent2)}
+.abtn-green{background:var(--green);color:#0d1117}.abtn-green:hover{background:#56d364}
+.abtn-red{background:var(--red);color:#fff}.abtn-red:hover{background:#ff6b6b}
+.abtn-gray{background:var(--surface);border:1px solid var(--border);color:var(--text2)}.abtn-gray:hover{border-color:var(--accent);color:var(--accent2)}
+.admin-status{font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;flex:1;min-width:200px}
+#fileInput{display:none}
+
+/* ── MAIN ── */
+.main{padding:20px 24px 48px}
+
+/* ── WELCOME ── */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62vh;text-align:center;gap:14px;padding:40px}
+.welcome-icon{font-size:60px}
+.welcome-title{font-size:22px;font-weight:700;color:var(--text2)}
+.welcome-sub{font-size:14px;color:var(--text3);line-height:1.9;max-width:400px}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.sw{flex:2;min-width:200px;position:relative}
+.sw svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.si{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 13px 10px 40px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;transition:border-color .2s}
+.si:focus{outline:none;border-color:var(--accent)}
+.si::placeholder{color:var(--text3)}
+.fs{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;min-width:148px}
+.fs:focus{outline:none;border-color:var(--accent)}
+.rc{font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;white-space:nowrap}
+
+/* ── SUMMARY ── */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.stat-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.stat-hotel-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+.hotel-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stat-total{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);background:var(--surface2);padding:3px 9px;border-radius:20px}
+.stat-body{padding:12px 16px;display:flex;flex-direction:column;gap:7px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.stat-label{color:var(--text2);display:flex;align-items:center;gap:6px}
+.dot-s{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.dot-t{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.dot-sp{width:6px;height:6px;border-radius:50%;background:var(--yellow)}
+.dot-c{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.stat-val{font-weight:700;font-family:'IBM Plex Mono',monospace}
+
+/* ── CARDS ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.guest-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+.guest-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.guest-card.cancelled{opacity:.55;border-color:var(--red)}
+.card-top{padding:14px 16px 11px;border-bottom:1px solid var(--border)}
+.card-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.seq-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:4px}
+.type-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.type-single{background:rgba(63,185,80,0.15);color:var(--green)}
+.type-twin{background:rgba(57,197,207,0.15);color:var(--cyan)}
+.type-spay{background:rgba(210,153,34,0.15);color:var(--yellow)}
+.type-cancel{background:rgba(248,81,73,0.15);color:var(--red)}
+.guest-name{font-size:17px;font-weight:700;margin-bottom:3px;line-height:1.3}
+.guest-card.cancelled .guest-name{text-decoration:line-through;color:var(--text2)}
+.guest-org{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.prov-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:1px 7px;border-radius:4px}
+.rm-box{background:rgba(57,197,207,0.05);border:1px dashed rgba(57,197,207,0.25);border-radius:8px;padding:10px 14px;margin:10px 16px}
+.rm-lbl{font-size:10px;color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.rm-name{font-size:14px;font-weight:600}
+.rm-org{font-size:11px;color:var(--text2);margin-top:2px}
+.card-info{padding:11px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ci{display:flex;flex-direction:column;gap:2px}
+.ci.full{grid-column:1/-1}
+.ci-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.ci-val{font-size:13px;font-weight:600;color:var(--text)}
+.ci-val.waiting{color:var(--yellow);font-style:italic}
+.ci-val.time-val{color:var(--red)}
+.car-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:4px;font-family:'IBM Plex Mono',monospace}
+.card-footer{background:rgba(210,153,34,0.04);border-top:1px solid var(--border);padding:10px 16px}
+.cf-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px;gap:8px}
+.cf-row:last-child{margin-bottom:0}
+.cf-lbl{color:var(--text2);display:flex;align-items:center;gap:4px;flex-shrink:0}
+.cf-val{color:var(--yellow);font-weight:600;text-align:right;font-size:12px}
+.phone-btn{background:rgba(63,185,80,0.12);border:1px solid rgba(63,185,80,0.3);color:var(--green);font-size:12px;padding:4px 12px;border-radius:6px;font-family:'Sarabun',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .2s;white-space:nowrap;font-weight:600}
+.phone-btn:hover{background:rgba(63,185,80,0.22)}
+
+.empty{text-align:center;padding:60px 24px;color:var(--text2)}
+.empty-icon{font-size:44px;margin-bottom:12px}
+.empty-txt{font-size:16px}
+
+/* ── LOADING ── */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.loading-overlay.show{display:flex}
+.spinner{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:14px;color:var(--text2)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);color:var(--text);padding:13px 18px;border-radius:10px;font-size:14px;z-index:400;display:none;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.5);border:1px solid var(--border)}
+.toast.show{display:block;animation:tin .3s ease}
+.toast.err{border-color:var(--red)}.toast.ok{border-color:var(--green)}
+@keyframes tin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.toast-t{font-weight:700;margin-bottom:3px}
+.toast.err .toast-t{color:var(--red)}.toast.ok .toast-t{color:var(--green)}
+
+@media(max-width:640px){
+  .header,.main,.admin-bar{padding-left:14px;padding-right:14px}
+  .cards-grid{grid-template-columns:1fr}
+  .card-info{grid-template-columns:1fr}
+  .modal{margin:16px;padding:28px 20px}
+}
+</style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="header-logo">🏨</div>
-    <div>
-        <div class="header-title">DMSC Open House</div>
-        <div class="header-sub">ระบบจัดการรายชื่อผู้เข้าพักและรถรับส่ง</div>
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-txt">กำลังประมวลผลไฟล์...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-t" id="toastT"></div><div id="toastM"></div></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div class="modal-icon">🔐</div>
+    <div class="modal-title">เข้าสู่ระบบ Admin</div>
+    <div class="modal-sub">สำหรับเจ้าหน้าที่ผู้ดูแลระบบเท่านั้น</div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" id="loginUser" type="text" placeholder="กรอก Username" autocomplete="username">
     </div>
-    <div class="header-badge" id="versionBadge">v2.0 · Excel Import</div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="loginPass" type="password" placeholder="กรอก Password" autocomplete="current-password">
+      <div class="form-error" id="loginError">Username หรือ Password ไม่ถูกต้อง</div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">🏨</div>
+  <div>
+    <div class="hd-title">DMSC Open House</div>
+    <div class="hd-sub">รายชื่อผู้เข้าพักและรถรับส่ง</div>
+  </div>
+  <div class="hd-right">
+    <span class="chip chip-green" id="updatedChip" style="display:none"></span>
+    <span class="chip chip-blue" id="countChip" style="display:none"></span>
+    <!-- Admin login button (shown when not logged in) -->
+    <button class="icon-btn" id="loginBtn" onclick="openLogin()">🔐 Admin</button>
+    <!-- Logout button (shown when logged in) -->
+    <button class="icon-btn" id="logoutBtn" style="display:none;border-color:var(--yellow);color:var(--yellow)" onclick="doLogout()">🔓 ออกจากระบบ</button>
+  </div>
 </header>
 
-<!-- Loading -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="spinner"></div>
-    <div class="loading-text">กำลังประมวลผลไฟล์...</div>
+<!-- ADMIN BAR (visible only when logged in) -->
+<div class="admin-bar" id="adminBar">
+  <span class="admin-lbl">⚙️ Admin</span>
+  <div class="sep"></div>
+  <button class="abtn abtn-blue" onclick="document.getElementById('fileInput').click()">📂 โหลด Excel</button>
+  <input type="file" id="fileInput" accept=".xlsx,.xls"/>
+  <span class="admin-status" id="adminStatus">ยังไม่ได้โหลดไฟล์</span>
+  <div class="sep"></div>
+  <button class="abtn abtn-green" id="saveBtn" onclick="saveData()" disabled>💾 บันทึกข้อมูล</button>
+  <button class="abtn abtn-red" onclick="clearData()">🗑 ล้างข้อมูล</button>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast">
-    <div class="toast-title" id="toastTitle">เกิดข้อผิดพลาด</div>
-    <div id="toastMsg"></div>
-</div>
+<!-- MAIN -->
+<main class="main" id="mainContent">
 
-<!-- Upload Section -->
-<section class="upload-section" id="uploadSection">
-    <div class="upload-card" id="dropZone">
-        <span class="upload-icon">📊</span>
-        <div class="upload-title">อัปโหลดไฟล์ Excel</div>
-        <div class="upload-desc">
-            ลากไฟล์มาวางที่นี่ หรือกดปุ่มเลือกไฟล์<br>
-            รองรับ <strong>.xlsx</strong> และ <strong>.xls</strong>
-        </div>
-        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-            📂 เลือกไฟล์ Excel
-        </button>
-        <input type="file" id="fileInput" accept=".xlsx,.xls" />
-        <div class="upload-hint">ไฟล์จะถูกประมวลผลในเบราว์เซอร์ ไม่มีการส่งข้อมูลออกนอก</div>
-    </div>
+  <div class="welcome" id="welcomeView">
+    <div class="welcome-icon">🏨</div>
+    <div class="welcome-title">ยังไม่มีข้อมูลผู้เข้าพัก</div>
+    <div class="welcome-sub">Admin กรุณาเข้าสู่ระบบเพื่ออัปเดตข้อมูล<br>ผู้เข้าพักจะเห็นรายชื่อและข้อมูลห้องพักที่นี่</div>
+  </div>
 
-    <div class="col-guide">
-        <div class="col-guide-title">📋 คอลัมน์ที่ต้องมีในไฟล์ Excel (แถวแรก = หัวตาราง)</div>
-        <div class="col-list">
-            <span class="col-tag required">ลำดับ</span>
-            <span class="col-tag required">ชื่อ - สกุล</span>
-            <span class="col-tag required">หน่วยงาน</span>
-            <span class="col-tag required">จังหวัดที่ตั้งของหน่วยงาน</span>
-            <span class="col-tag required">ประเภทการเข้าพัก</span>
-            <span class="col-tag">ชื่อ - สกุล__1</span>
-            <span class="col-tag">หน่วยงาน__1</span>
-            <span class="col-tag">จังหวัดที่ตั้งของหน่วยงาน__1</span>
-            <span class="col-tag required">โรงแรม</span>
-            <span class="col-tag">เลขห้อง</span>
-            <span class="col-tag">ทะเบียนรถรับส่ง</span>
-            <span class="col-tag">เวลา</span>
-            <span class="col-tag">ผู้ประสานงาน ที่ โรงแรม</span>
-            <span class="col-tag">ติดต่อ</span>
-            <span class="col-tag">ผู้ประสานงาน ที่ กรม</span>
-            <span class="col-tag">หมายเหตุ</span>
-        </div>
-    </div>
-</section>
-
-<!-- App Section -->
-<section class="app-section" id="appSection">
-
-    <!-- Toolbar -->
+  <div id="guestView" style="display:none">
     <div class="toolbar">
-        <div class="search-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input class="search-input" id="searchInput" placeholder="ค้นหาชื่อ, หน่วยงาน, จังหวัด, โรงแรม, ทะเบียนรถ..." />
-        </div>
-        <select class="filter-select" id="provinceFilter">
-            <option value="">ทุกจังหวัด</option>
-        </select>
-        <select class="filter-select" id="hotelFilter">
-            <option value="">ทุกโรงแรม</option>
-        </select>
-        <div class="result-count" id="resultCount">— รายการ</div>
-        <button class="reload-btn" onclick="resetToUpload()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
-            </svg>
-            โหลดไฟล์ใหม่
-        </button>
+      <div class="sw">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input class="si" id="searchInput" placeholder="🔍 พิมพ์ชื่อตัวเองเพื่อค้นหา...">
+      </div>
+      <select class="fs" id="provinceFilter"><option value="">ทุกจังหวัด</option></select>
+      <select class="fs" id="hotelFilter"><option value="">ทุกโรงแรม</option></select>
+      <div class="rc" id="resultCount">— รายการ</div>
     </div>
-
-    <!-- Summary -->
     <div class="summary-grid" id="summaryGrid"></div>
-
-    <!-- Cards -->
     <div class="cards-grid" id="cardsGrid"></div>
-    <div class="empty-state" id="emptyState" style="display:none">
-        <div class="empty-state-icon">🔍</div>
-        <div class="empty-state-text">ไม่พบข้อมูลที่ตรงกัน</div>
+    <div class="empty" id="emptyState" style="display:none">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-txt">ไม่พบข้อมูลที่ตรงกัน</div>
     </div>
+  </div>
 
-</section>
+</main>
 
 <script>
-// ===== COLUMN MAP =====
-// รองรับชื่อคอลัมน์หลายรูปแบบ
-const COL = {
-    seq:      ['ลำดับ', 'ลำดับที่', 'no', 'No'],
-    name1:    ['ชื่อ - สกุล', 'ชื่อ-สกุล', 'ชื่อสกุล', 'ชื่อ'],
-    dept1:    ['หน่วยงาน'],
-    prov1:    ['จังหวัดที่ตั้งของหน่วยงาน', 'จังหวัด'],
-    type:     ['ประเภทการเข้าพัก', 'ประเภท'],
-    name2:    ['ชื่อ - สกุล__1', 'ชื่อ-สกุล__1', 'ชื่อสกุล__1', 'ชื่อ__1', 'รูมเมท'],
-    dept2:    ['หน่วยงาน__1'],
-    prov2:    ['จังหวัดที่ตั้งของหน่วยงาน__1', 'จังหวัด__1'],
-    hotel:    ['โรงแรม'],
-    room:     ['เลขห้อง', 'ห้อง'],
-    car:      ['ทะเบียนรถรับลส่ง\nที่พัก - กรมวิทย์', 'ทะเบียนรถรับส่ง', 'ทะเบียนรถ', 'รถรับส่ง'],
-    time:     ['เวลา\n(เริ่มออกจากโรงแรมตั้งแต่)', 'เวลา', 'เวลาออกเดินทาง'],
-    coord1:   ['ผู้ประสานงาน ที่ โรงแรม', 'ผู้ประสานงานโรงแรม'],
-    phone:    ['ติดต่อ', 'เบอร์', 'โทร'],
-    coord2:   ['ผู้ประสานงาน ที่ กรม', 'ผู้ประสานงานกรม'],
-    note:     ['หมายเหตุ'],
-};
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
+const ADMIN_USER = 'admin01';
+const ADMIN_PASS = 'Dmsc@1234';
+const STORAGE_KEY = 'dmsc_oh_data';
+const SESSION_KEY = 'dmsc_oh_session';
+const PALETTE = ['#1f6feb','#39c5cf','#3fb950','#d29922','#bc8cff','#ff7b72'];
+
+const COL={seq:['ลำดับ','ลำดับที่','no','No'],name1:['ชื่อ - สกุล','ชื่อ-สกุล','ชื่อสกุล','ชื่อ'],dept1:['หน่วยงาน'],prov1:['จังหวัดที่ตั้งของหน่วยงาน','จังหวัด'],type:['ประเภทการเข้าพัก','ประเภท'],name2:['ชื่อ - สกุล__1','ชื่อ-สกุล__1','ชื่อสกุล__1','ชื่อ__1','รูมเมท'],dept2:['หน่วยงาน__1'],prov2:['จังหวัดที่ตั้งของหน่วยงาน__1','จังหวัด__1'],hotel:['โรงแรม'],room:['เลขห้อง','ห้อง'],car:['ทะเบียนรถรับลส่ง\nที่พัก - กรมวิทย์','ทะเบียนรถรับส่ง','ทะเบียนรถ','รถรับส่ง'],time:['เวลา\n(เริ่มออกจากโรงแรมตั้งแต่)','เวลา','เวลาออกเดินทาง'],coord1:['ผู้ประสานงาน ที่ โรงแรม','ผู้ประสานงานโรงแรม'],phone:['ติดต่อ','เบอร์','โทร'],coord2:['ผู้ประสานงาน ที่ กรม','ผู้ประสานงานกรม'],note:['หมายเหตุ']};
 
 let guestData = [];
 let hotelColors = {};
+let pendingData = null;
+let isAdmin = false;
 
-// ===== UTIL =====
-function getVal(row, keys) {
-    for (const k of keys) {
-        if (row[k] !== undefined && row[k] !== null && row[k] !== '') {
-            return String(row[k]).trim();
-        }
-    }
-    return '-';
-}
-
-function mapRow(row) {
-    return {
-        seq:    getVal(row, COL.seq),
-        name1:  getVal(row, COL.name1),
-        dept1:  getVal(row, COL.dept1),
-        prov1:  getVal(row, COL.prov1),
-        type:   getVal(row, COL.type),
-        name2:  getVal(row, COL.name2),
-        dept2:  getVal(row, COL.dept2),
-        prov2:  getVal(row, COL.prov2),
-        hotel:  getVal(row, COL.hotel),
-        room:   getVal(row, COL.room),
-        car:    getVal(row, COL.car),
-        time:   getVal(row, COL.time),
-        coord1: getVal(row, COL.coord1),
-        phone:  getVal(row, COL.phone),
-        coord2: getVal(row, COL.coord2),
-        note:   getVal(row, COL.note),
-    };
-}
-
-// ===== FILE HANDLING =====
-document.getElementById('fileInput').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) processFile(file);
-});
-
-const dropZone = document.getElementById('dropZone');
-
-dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-});
-
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-
-dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
-        processFile(file);
-    } else {
-        showToast('ไฟล์ไม่ถูกต้อง', 'กรุณาเลือกไฟล์ .xlsx หรือ .xls เท่านั้น');
-    }
-});
-
-function processFile(file) {
-    showLoading(true);
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            
-            // ใช้ Sheet แรก
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-            
-            if (rows.length === 0) {
-                showToast('ไฟล์ว่างเปล่า', 'ไม่พบข้อมูลในไฟล์ Excel กรุณาตรวจสอบไฟล์');
-                showLoading(false);
-                return;
-            }
-
-            // Map + filter rows ที่มี seq
-            guestData = rows
-                .map(mapRow)
-                .filter(r => r.seq && r.seq !== '-' && r.name1 && r.name1 !== '-');
-
-            if (guestData.length === 0) {
-                showToast('ไม่พบข้อมูล', 'ไม่สามารถอ่านข้อมูลได้ กรุณาตรวจสอบชื่อคอลัมน์');
-                showLoading(false);
-                return;
-            }
-
-            // Sort by seq
-            guestData.sort((a, b) => (parseInt(a.seq) || 0) - (parseInt(b.seq) || 0));
-
-            // Assign hotel colors
-            const hotels = [...new Set(guestData.map(g => g.hotel).filter(h => h !== '-'))];
-            const colorPalette = ['#1f6feb', '#39c5cf', '#3fb950', '#d29922', '#bc8cff', '#ff7b72'];
-            hotels.forEach((h, i) => hotelColors[h] = colorPalette[i % colorPalette.length]);
-
-            // Populate filters
-            populateFilters();
-            renderSummary(guestData);
-            renderCards(guestData);
-
-            // Switch view
-            showLoading(false);
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('appSection').classList.add('visible');
-
-            document.getElementById('versionBadge').textContent = `${guestData.length} รายการ · ${file.name}`;
-
-        } catch (err) {
-            showToast('เกิดข้อผิดพลาด', 'ไม่สามารถอ่านไฟล์ได้: ' + err.message);
-            showLoading(false);
-        }
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-// ===== FILTERS =====
-function populateFilters() {
-    const provinces = [...new Set(guestData.map(g => g.prov1).filter(p => p && p !== '-'))].sort((a,b) => a.localeCompare(b,'th'));
-    const hotels = [...new Set(guestData.map(g => g.hotel).filter(h => h && h !== '-'))].sort();
-
-    const pf = document.getElementById('provinceFilter');
-    pf.innerHTML = '<option value="">ทุกจังหวัด</option>';
-    provinces.forEach(p => pf.innerHTML += `<option value="${p}">${p}</option>`);
-
-    const hf = document.getElementById('hotelFilter');
-    hf.innerHTML = '<option value="">ทุกโรงแรม</option>';
-    hotels.forEach(h => hf.innerHTML += `<option value="${h}">${h}</option>`);
-}
-
-// ===== SUMMARY =====
-function renderSummary(data) {
-    const hotelMap = {};
-    data.forEach(g => {
-        const h = g.hotel || 'ไม่ระบุ';
-        if (!hotelMap[h]) hotelMap[h] = { total: 0, single: 0, twin: 0, singlePay: 0, cancelled: 0 };
-        const isCancelled = g.name1.includes('ยกเลิก');
-        if (isCancelled) { hotelMap[h].cancelled++; }
-        else if (g.type === 'พักคู่') { hotelMap[h].twin++; }
-        else if (g.type === 'พักเดี่ยว จ่ายส่วนต่าง') { hotelMap[h].singlePay++; }
-        else { hotelMap[h].single++; }
-        hotelMap[h].total++;
-    });
-
-    const grid = document.getElementById('summaryGrid');
-    grid.innerHTML = '';
-    for (const [hotel, stat] of Object.entries(hotelMap)) {
-        const color = hotelColors[hotel] || '#8b949e';
-        grid.innerHTML += `
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-hotel-name">
-                    <div class="hotel-dot" style="background:${color}"></div>
-                    ${hotel}
-                </div>
-                <div class="stat-total">รวม ${stat.total} ห้อง</div>
-            </div>
-            <div class="stat-body">
-                ${stat.single ? `<div class="stat-row"><span class="stat-label"><div class="dot-s"></div> พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${stat.single}</span></div>` : ''}
-                ${stat.twin ? `<div class="stat-row"><span class="stat-label"><div class="dot-t"></div> พักคู่</span><span class="stat-val" style="color:var(--cyan)">${stat.twin}</span></div>` : ''}
-                ${stat.singlePay ? `<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div> พักเดี่ยว จ่ายส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${stat.singlePay}</span></div>` : ''}
-                ${stat.cancelled ? `<div class="stat-row"><span class="stat-label"><div class="dot-c"></div> ยกเลิก</span><span class="stat-val" style="color:var(--red)">${stat.cancelled}</span></div>` : ''}
-            </div>
-        </div>`;
-    }
-}
-
-// ===== CARDS =====
-function renderCards(data) {
-    const grid = document.getElementById('cardsGrid');
-    const empty = document.getElementById('emptyState');
-    document.getElementById('resultCount').textContent = `${data.length} รายการ`;
-
-    if (data.length === 0) {
-        grid.innerHTML = '';
-        empty.style.display = 'block';
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+(function init(){
+  // restore session
+  if (sessionStorage.getItem(SESSION_KEY) === 'yes') {
+    isAdmin = true;
+    showAdminUI(true);
+  }
+  // load data
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const p = JSON.parse(saved);
+      if (p && p.guests && p.guests.length) {
+        guestData = p.guests;
+        hotelColors = p.colors || {};
+        showGuestView(p.updatedAt);
         return;
+      }
     }
-    empty.style.display = 'none';
+  } catch(e){}
+  showWelcome();
+})();
 
-    grid.innerHTML = data.map(g => {
-        const isCancelled = g.name1.includes('ยกเลิก');
-        const isTwin = g.type === 'พักคู่';
-
-        let typeBadge = '';
-        if (isCancelled) typeBadge = `<span class="type-badge type-cancel">ยกเลิกห้อง</span>`;
-        else if (g.type === 'พักเดี่ยว') typeBadge = `<span class="type-badge type-single">พักเดี่ยว</span>`;
-        else if (g.type === 'พักคู่') typeBadge = `<span class="type-badge type-twin">พักคู่</span>`;
-        else if (g.type.includes('จ่ายส่วนต่าง')) typeBadge = `<span class="type-badge type-single-pay">เดี่ยว+ส่วนต่าง</span>`;
-        else typeBadge = `<span class="type-badge">${g.type}</span>`;
-
-        const roomClass = (g.room === 'รอเช็คอิน' || g.room === 'รอ' || g.room === '-') ? 'room-waiting' : '';
-        const roomDisplay = (g.room === 'รอ') ? 'รอเช็คอิน' : g.room;
-        const hotelColor = hotelColors[g.hotel] || '#8b949e';
-
-        const roommateHtml = (isTwin && g.name2 && g.name2 !== '-') ? `
-            <div class="roommate-box">
-                <div class="rm-label">👥 ผู้เข้าพักร่วม</div>
-                <div class="rm-name">${g.name2}</div>
-                <div class="rm-org">${g.dept2} · ${g.prov2}</div>
-            </div>` : '';
-
-        const coordHtml = (g.coord1 !== '-' || g.phone !== '-') ? `
-            <div class="card-footer">
-                ${g.coord1 !== '-' ? `<div class="coord-row">
-                    <span class="coord-lbl">🏨 ผู้ประสานงานโรงแรม</span>
-                    <span class="coord-val" style="font-size:12px">${g.coord1}</span>
-                </div>` : ''}
-                <div class="coord-row">
-                    ${g.coord2 !== '-' ? `<span class="coord-lbl">🏢 ผู้ประสานงานกรม: <b style="color:var(--text)">${g.coord2}</b></span>` : '<span></span>'}
-                    ${g.phone !== '-' ? `<span class="phone-chip">📞 ${g.phone}</span>` : ''}
-                </div>
-            </div>` : '';
-
-        return `
-        <div class="guest-card ${isCancelled ? 'cancelled' : ''}">
-            <div class="card-top" style="border-left: 3px solid ${hotelColor}; padding-left: 15px;">
-                <div class="card-top-row">
-                    <span class="seq-badge">#${g.seq}</span>
-                    ${typeBadge}
-                </div>
-                <div class="guest-name">${g.name1}</div>
-                <div class="guest-org">
-                    ${g.dept1 !== '-' ? `<span>${g.dept1}</span>` : ''}
-                    ${g.prov1 !== '-' ? `<span class="prov-chip">${g.prov1}</span>` : ''}
-                </div>
-            </div>
-            ${roommateHtml}
-            <div class="card-details">
-                <div class="detail-row">
-                    <div class="detail-lbl">🏨 โรงแรม</div>
-                    <div class="detail-val" style="color:${hotelColor}">${g.hotel}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-lbl">🔑 เลขห้อง</div>
-                    <div class="detail-val ${roomClass}">${roomDisplay}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-lbl">🚌 รถรับส่ง</div>
-                    <div class="detail-val"><span class="car-chip">${g.car}</span></div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-lbl">⏰ เวลาออกเดินทาง</div>
-                    <div class="detail-val time">${g.time}</div>
-                </div>
-                ${g.note && g.note !== '-' ? `<div class="detail-row full">
-                    <div class="detail-lbl">📝 หมายเหตุ</div>
-                    <div class="detail-val" style="color:var(--text2);font-weight:400;font-style:italic">${g.note}</div>
-                </div>` : ''}
-            </div>
-            ${coordHtml}
-        </div>`;
-    }).join('');
+// ─────────────────────────────────────────────
+// LOGIN / LOGOUT
+// ─────────────────────────────────────────────
+function openLogin(){
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('loginUser').focus();
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('loginUser').classList.remove('err');
+  document.getElementById('loginPass').classList.remove('err');
+  document.getElementById('loginPass').value = '';
 }
 
-// ===== FILTER LOGIC =====
-function applyFilters() {
-    const search = document.getElementById('searchInput').value.toLowerCase().trim();
-    const prov = document.getElementById('provinceFilter').value;
-    const hotel = document.getElementById('hotelFilter').value;
-
-    const filtered = guestData.filter(g => {
-        if (prov && g.prov1 !== prov) return false;
-        if (hotel && g.hotel !== hotel) return false;
-        if (search) {
-            const blob = [g.seq, g.name1, g.dept1, g.prov1, g.name2, g.dept2, g.prov2, g.hotel, g.room, g.car, g.coord1, g.coord2, g.phone, g.type].join(' ').toLowerCase();
-            if (!blob.includes(search)) return false;
-        }
-        return true;
-    });
-
-    renderCards(filtered);
+function closeLogin(){
+  document.getElementById('loginModal').classList.remove('show');
 }
 
-document.getElementById('searchInput').addEventListener('input', applyFilters);
-document.getElementById('provinceFilter').addEventListener('change', applyFilters);
-document.getElementById('hotelFilter').addEventListener('change', applyFilters);
-
-// ===== HELPERS =====
-function showLoading(show) {
-    document.getElementById('loadingOverlay').classList.toggle('show', show);
+function doLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem(SESSION_KEY, 'yes');
+    isAdmin = true;
+    closeLogin();
+    showAdminUI(true);
+    showToast('เข้าสู่ระบบสำเร็จ ✅', 'ยินดีต้อนรับสู่โหมด Admin', 'ok');
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginUser').classList.add('err');
+    document.getElementById('loginPass').classList.add('err');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+  }
 }
 
-function showToast(title, msg) {
-    document.getElementById('toastTitle').textContent = title;
-    document.getElementById('toastMsg').textContent = msg;
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
+function doLogout(){
+  if (!confirm('ออกจากระบบ Admin?')) return;
+  sessionStorage.removeItem(SESSION_KEY);
+  isAdmin = false;
+  pendingData = null;
+  showAdminUI(false);
+  document.getElementById('adminStatus').textContent = 'ยังไม่ได้โหลดไฟล์';
+  document.getElementById('saveBtn').disabled = true;
+  document.getElementById('fileInput').value = '';
+  showToast('ออกจากระบบแล้ว', '', 'ok');
 }
 
-function resetToUpload() {
-    guestData = [];
-    hotelColors = {};
-    document.getElementById('fileInput').value = '';
-    document.getElementById('searchInput').value = '';
-    document.getElementById('appSection').classList.remove('visible');
-    document.getElementById('uploadSection').classList.remove('hidden');
-    document.getElementById('versionBadge').textContent = 'v2.0 · Excel Import';
+function showAdminUI(on){
+  document.getElementById('adminBar').classList.toggle('show', on);
+  document.getElementById('loginBtn').style.display = on ? 'none' : '';
+  document.getElementById('logoutBtn').style.display = on ? '' : 'none';
+}
+
+// enter key on login
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+// click outside modal to close
+document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeLogin(); });
+
+// ─────────────────────────────────────────────
+// FILE LOAD
+// ─────────────────────────────────────────────
+document.getElementById('fileInput').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) loadExcel(f);
+});
+
+function loadExcel(file){
+  if (!isAdmin) return;
+  showLoading(true);
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
+      if (!rows.length){ showToast('ไฟล์ว่างเปล่า','ไม่พบข้อมูลในไฟล์','err'); showLoading(false); return; }
+      const mapped = rows.map(mapRow).filter(r => r.seq&&r.seq!=='-'&&r.name1&&r.name1!=='-');
+      if (!mapped.length){ showToast('ไม่พบข้อมูล','กรุณาตรวจสอบชื่อคอลัมน์','err'); showLoading(false); return; }
+      mapped.sort((a,b)=>(parseInt(a.seq)||0)-(parseInt(b.seq)||0));
+      const colors={};
+      [...new Set(mapped.map(g=>g.hotel).filter(h=>h!=='-'))].forEach((h,i)=>colors[h]=PALETTE[i%PALETTE.length]);
+      pendingData = {guests:mapped, colors};
+      showLoading(false);
+      document.getElementById('adminStatus').textContent = `✅ โหลดแล้ว ${mapped.length} รายการ จาก "${file.name}"`;
+      document.getElementById('saveBtn').disabled = false;
+      // preview
+      guestData = mapped; hotelColors = colors;
+      showGuestView(null);
+      showToast('โหลดสำเร็จ', `พบ ${mapped.length} รายการ — กด "บันทึกข้อมูล" เพื่อเผยแพร่`, 'ok');
+    } catch(err){ showToast('เกิดข้อผิดพลาด','อ่านไฟล์ไม่ได้: '+err.message,'err'); showLoading(false); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ─────────────────────────────────────────────
+// SAVE / CLEAR
+// ─────────────────────────────────────────────
+function saveData(){
+  if (!isAdmin || !pendingData) return;
+  const now = new Date();
+  const ds = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()+543} ${String(now.getHours()).padStart(2,'0')}.${String(now.getMinutes()).padStart(2,'0')} น.`;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({guests:pendingData.guests, colors:pendingData.colors, updatedAt:ds}));
+    guestData = pendingData.guests; hotelColors = pendingData.colors;
+    pendingData = null;
+    document.getElementById('saveBtn').disabled = true;
+    document.getElementById('adminStatus').textContent = `✅ บันทึกแล้ว — อัปเดต ${ds}`;
+    showGuestView(ds);
+    showToast('บันทึกสำเร็จ! 🎉', 'ผู้เข้าพักทุกคนจะเห็นข้อมูลล่าสุดแล้ว', 'ok');
+  } catch(e){ showToast('บันทึกไม่ได้','Storage อาจเต็ม ลองล้างข้อมูลเก่าก่อน','err'); }
+}
+
+function clearData(){
+  if (!isAdmin) return;
+  if (!confirm('ลบข้อมูลทั้งหมดออกจากระบบ?\nผู้เข้าพักจะไม่เห็นรายชื่อจนกว่าจะโหลดไฟล์ใหม่')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  guestData=[]; hotelColors={}; pendingData=null;
+  document.getElementById('saveBtn').disabled=true;
+  document.getElementById('adminStatus').textContent='ยังไม่ได้โหลดไฟล์';
+  document.getElementById('fileInput').value='';
+  showWelcome();
+  showToast('ล้างข้อมูลแล้ว','','ok');
+}
+
+// ─────────────────────────────────────────────
+// VIEWS
+// ─────────────────────────────────────────────
+function showWelcome(){
+  document.getElementById('welcomeView').style.display='flex';
+  document.getElementById('guestView').style.display='none';
+  document.getElementById('updatedChip').style.display='none';
+  document.getElementById('countChip').style.display='none';
+}
+
+function showGuestView(updatedAt){
+  document.getElementById('welcomeView').style.display='none';
+  document.getElementById('guestView').style.display='block';
+  if (updatedAt) {
+    const uc=document.getElementById('updatedChip');
+    uc.textContent='🕐 '+updatedAt; uc.style.display='inline';
+  }
+  const cc=document.getElementById('countChip');
+  cc.textContent=guestData.length+' รายการ'; cc.style.display='inline';
+  populateFilters();
+  renderSummary(guestData);
+  renderCards(guestData);
+}
+
+// ─────────────────────────────────────────────
+// DATA / RENDER
+// ─────────────────────────────────────────────
+function getVal(row,keys){for(const k of keys){if(row[k]!==undefined&&row[k]!==null&&row[k]!=='')return String(row[k]).trim();}return '-';}
+function mapRow(row){return{seq:getVal(row,COL.seq),name1:getVal(row,COL.name1),dept1:getVal(row,COL.dept1),prov1:getVal(row,COL.prov1),type:getVal(row,COL.type),name2:getVal(row,COL.name2),dept2:getVal(row,COL.dept2),prov2:getVal(row,COL.prov2),hotel:getVal(row,COL.hotel),room:getVal(row,COL.room),car:getVal(row,COL.car),time:getVal(row,COL.time),coord1:getVal(row,COL.coord1),phone:getVal(row,COL.phone),coord2:getVal(row,COL.coord2),note:getVal(row,COL.note)};}
+
+function populateFilters(){
+  const provs=[...new Set(guestData.map(g=>g.prov1).filter(p=>p&&p!=='-'))].sort((a,b)=>a.localeCompare(b,'th'));
+  const hotels=[...new Set(guestData.map(g=>g.hotel).filter(h=>h&&h!=='-'))].sort();
+  const pf=document.getElementById('provinceFilter');pf.innerHTML='<option value="">ทุกจังหวัด</option>';provs.forEach(p=>pf.innerHTML+=`<option value="${p}">${p}</option>`);
+  const hf=document.getElementById('hotelFilter');hf.innerHTML='<option value="">ทุกโรงแรม</option>';hotels.forEach(h=>hf.innerHTML+=`<option value="${h}">${h}</option>`);
+}
+
+function renderSummary(data){
+  const map={};
+  data.forEach(g=>{const h=g.hotel||'ไม่ระบุ';if(!map[h])map[h]={total:0,single:0,twin:0,singlePay:0,cancelled:0};if(g.name1.includes('ยกเลิก'))map[h].cancelled++;else if(g.type==='พักคู่')map[h].twin++;else if(g.type.includes('จ่ายส่วนต่าง'))map[h].singlePay++;else map[h].single++;map[h].total++;});
+  document.getElementById('summaryGrid').innerHTML=Object.entries(map).map(([hotel,s])=>{const color=hotelColors[hotel]||'#8b949e';return`<div class="stat-card"><div class="stat-header"><div class="stat-hotel-name"><div class="hotel-dot" style="background:${color}"></div>${hotel}</div><div class="stat-total">รวม ${s.total} ห้อง</div></div><div class="stat-body">${s.single?`<div class="stat-row"><span class="stat-label"><div class="dot-s"></div>พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${s.single}</span></div>`:''} ${s.twin?`<div class="stat-row"><span class="stat-label"><div class="dot-t"></div>พักคู่</span><span class="stat-val" style="color:var(--cyan)">${s.twin}</span></div>`:''} ${s.singlePay?`<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div>พักเดี่ยว+ส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${s.singlePay}</span></div>`:''} ${s.cancelled?`<div class="stat-row"><span class="stat-label"><div class="dot-c"></div>ยกเลิก</span><span class="stat-val" style="color:var(--red)">${s.cancelled}</span></div>`:''}</div></div>`;}).join('');
+}
+
+function buildCard(g){
+  const ic=g.name1.includes('ยกเลิก'),it=g.type==='พักคู่';
+  const badge=ic?'<span class="type-badge type-cancel">ยกเลิกห้อง</span>':g.type==='พักเดี่ยว'?'<span class="type-badge type-single">พักเดี่ยว</span>':it?'<span class="type-badge type-twin">พักคู่</span>':g.type.includes('จ่ายส่วนต่าง')?'<span class="type-badge type-spay">เดี่ยว+ส่วนต่าง</span>':`<span class="type-badge">${g.type}</span>`;
+  const rc=(g.room==='รอเช็คอิน'||g.room==='รอ'||g.room==='-')?'waiting':'';
+  const rd=g.room==='รอ'?'รอเช็คอิน':g.room;
+  const hc=hotelColors[g.hotel]||'#8b949e';
+  const rm=(it&&g.name2&&g.name2!=='-')?`<div class="rm-box"><div class="rm-lbl">👥 ผู้เข้าพักร่วม</div><div class="rm-name">${g.name2}</div><div class="rm-org">${g.dept2} · ${g.prov2}</div></div>`:'';
+  const phoneRaw=g.phone!=='-'?g.phone.replace(/[^0-9]/g,''):'';
+  const phoneLink=phoneRaw?`<a class="phone-btn" href="tel:${phoneRaw}">📞 ${g.phone}</a>`:'';
+  const footer=(g.coord1!=='-'||g.coord2!=='-'||phoneLink)?`<div class="card-footer">${g.coord1!=='-'?`<div class="cf-row"><span class="cf-lbl">🏨 ประสานงานโรงแรม</span><span class="cf-val">${g.coord1}</span></div>`:''} ${g.coord2!=='-'?`<div class="cf-row"><span class="cf-lbl">🏢 ประสานงานกรม</span><span class="cf-val">${g.coord2}</span></div>`:''} ${phoneLink?`<div class="cf-row"><span class="cf-lbl">📞 เบอร์ติดต่อ</span>${phoneLink}</div>`:''}</div>`:'';
+  return`<div class="guest-card ${ic?'cancelled':''}"><div class="card-top" style="border-left:3px solid ${hc};padding-left:13px"><div class="card-top-row"><span class="seq-badge">#${g.seq}</span>${badge}</div><div class="guest-name">${g.name1}</div><div class="guest-org">${g.dept1!=='-'?`<span>${g.dept1}</span>`:''}${g.prov1!=='-'?`<span class="prov-chip">${g.prov1}</span>`:''}</div></div>${rm}<div class="card-info"><div class="ci"><div class="ci-lbl">🏨 โรงแรม</div><div class="ci-val" style="color:${hc}">${g.hotel}</div></div><div class="ci"><div class="ci-lbl">🔑 เลขห้อง</div><div class="ci-val ${rc}">${rd}</div></div><div class="ci"><div class="ci-lbl">🚌 รถรับส่ง</div><div class="ci-val"><span class="car-tag">${g.car}</span></div></div><div class="ci"><div class="ci-lbl">⏰ เวลาออกเดินทาง</div><div class="ci-val time-val">${g.time}</div></div>${g.note&&g.note!=='-'?`<div class="ci full"><div class="ci-lbl">📝 หมายเหตุ</div><div class="ci-val" style="color:var(--text2);font-weight:400;font-style:italic">${g.note}</div></div>`:''}</div>${footer}</div>`;
+}
+
+function renderCards(data){
+  document.getElementById('resultCount').textContent=`${data.length} รายการ`;
+  if(!data.length){document.getElementById('cardsGrid').innerHTML='';document.getElementById('emptyState').style.display='block';return;}
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('cardsGrid').innerHTML=data.map(buildCard).join('');
+}
+
+// ─────────────────────────────────────────────
+// FILTER
+// ─────────────────────────────────────────────
+function applyFilters(){
+  const s=document.getElementById('searchInput').value.toLowerCase().trim();
+  const p=document.getElementById('provinceFilter').value;
+  const h=document.getElementById('hotelFilter').value;
+  renderCards(guestData.filter(g=>{
+    if(p&&g.prov1!==p)return false;
+    if(h&&g.hotel!==h)return false;
+    if(s){const b=[g.seq,g.name1,g.dept1,g.prov1,g.name2,g.dept2,g.prov2,g.hotel,g.room,g.car,g.coord1,g.coord2,g.phone,g.type].join(' ').toLowerCase();if(!b.includes(s))return false;}
+    return true;
+  }));
+}
+document.getElementById('searchInput').addEventListener('input',applyFilters);
+document.getElementById('provinceFilter').addEventListener('change',applyFilters);
+document.getElementById('hotelFilter').addEventListener('change',applyFilters);
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function showLoading(s){document.getElementById('loadingOverlay').classList.toggle('show',s);}
+function showToast(title,msg,type=''){
+  const t=document.getElementById('toast');
+  document.getElementById('toastT').textContent=title;
+  document.getElementById('toastM').textContent=msg;
+  t.className='toast show '+(type==='err'?'err':type==='ok'?'ok':'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),4000);
 }
 </script>
 </body>
