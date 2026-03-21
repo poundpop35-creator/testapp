@@ -237,6 +237,13 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .toast-t{font-weight:700;margin-bottom:2px}
 .toast.err .toast-t{color:var(–red)}.toast.ok .toast-t{color:var(–green)}
 
+/* THEME COLORS */
+body{transition:background .3s}
+.theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:4px}
+.theme-swatch{width:100%;aspect-ratio:1;border-radius:10px;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative}
+.theme-swatch.active{border-color:var(–accent);box-shadow:0 0 0 2px #fff,0 0 0 4px var(–accent)}
+.theme-swatch:hover{transform:scale(1.08)}
+
 @media(max-width:640px){
 .header,.main,.admin-bar{padding-left:14px;padding-right:14px}
 .cards-grid{grid-template-columns:1fr}
@@ -414,6 +421,10 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div class="modal-title">ตั้งค่างาน</div>
     <div class="modal-sub">แก้ไขชื่องานและโลโก้</div>
     <div class="logo-preview" id="settingsLogoPreview">🏨</div>
+    <div class="form-group" style="margin-bottom:16px">
+      <label class="form-label">🎨 ธีมสีพื้นหลัง</label>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
     <div class="upload-zone" onclick="document.getElementById('logoFileInput').click()">
       <div class="upload-zone-txt">📷 อัปโหลดโลโก้</div>
       <div class="upload-zone-hint">PNG, JPG — หรือใส่ Emoji ด้านล่าง</div>
@@ -915,6 +926,7 @@ async function confirmChangePw(){
 
 // ════ SETTINGS ════
 async function openSettingsModal(){
+  initThemeGrid();
   try {
     const rows=await sb(`/rest/v1/events?id=eq.${encodeURIComponent(currentEventId)}&select=*`);
     const ev=(rows&&rows.length)?rows[0]:{};
@@ -1066,6 +1078,68 @@ function closeModal(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('.modal-overlay').forEach(el=>{
   el.addEventListener('click',e=>{if(e.target===el&&el.id!=='landingModal')el.classList.remove('show');});
 });
+
+
+// ════ THEME ════
+const THEMES = [
+  {id:'white',   label:'ขาว',       bg:'#f5f7fa', surface:'#ffffff', border:'#e2e8f0'},
+  {id:'blue',    label:'ฟ้า',       bg:'#eff6ff', surface:'#ffffff', border:'#bfdbfe'},
+  {id:'green',   label:'เขียว',     bg:'#f0fdf4', surface:'#ffffff', border:'#bbf7d0'},
+  {id:'purple',  label:'ม่วง',      bg:'#f5f3ff', surface:'#ffffff', border:'#ddd6fe'},
+  {id:'rose',    label:'ชมพู',      bg:'#fff1f2', surface:'#ffffff', border:'#fecdd3'},
+  {id:'amber',   label:'เหลือง',    bg:'#fffbeb', surface:'#ffffff', border:'#fde68a'},
+  {id:'teal',    label:'เขียวฟ้า',  bg:'#f0fdfa', surface:'#ffffff', border:'#99f6e4'},
+  {id:'slate',   label:'เทา',       bg:'#f1f5f9', surface:'#ffffff', border:'#cbd5e1'},
+  {id:'navy',    label:'กรมท่า',    bg:'#1e293b', surface:'#0f172a', border:'#334155', dark:true},
+  {id:'dark',    label:'มืด',       bg:'#111827', surface:'#1f2937', border:'#374151', dark:true},
+];
+const THEME_KEY = 'dmsc_theme';
+
+function initThemeGrid(){
+  const saved = localStorage.getItem(THEME_KEY) || 'white';
+  const grid = document.getElementById('themeGrid');
+  if (!grid) return;
+  grid.innerHTML = THEMES.map(t => `
+    <div class="theme-swatch ${t.id===saved?'active':''}"
+      style="background:linear-gradient(135deg,${t.bg} 60%,${t.border})"
+      title="${t.label}"
+      onclick="applyTheme('${t.id}',true)">
+      ${t.id===saved?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px">✓</div>':''}
+    </div>`).join('');
+}
+
+function applyTheme(id, save){
+  const t = THEMES.find(x=>x.id===id) || THEMES[0];
+  const root = document.documentElement;
+  root.style.setProperty('--bg', t.bg);
+  root.style.setProperty('--surface', t.surface);
+  root.style.setProperty('--border', t.border);
+  if (t.dark){
+    root.style.setProperty('--text','#f1f5f9');
+    root.style.setProperty('--text2','#94a3b8');
+    root.style.setProperty('--text3','#475569');
+    root.style.setProperty('--surface2','#1e293b');
+    root.style.setProperty('--border2','#475569');
+    document.querySelectorAll('.guest-card,.stat-card,.modal,.loading-box').forEach(el=>el.style.background=t.surface);
+  } else {
+    root.style.setProperty('--text','#0f172a');
+    root.style.setProperty('--text2','#475569');
+    root.style.setProperty('--text3','#94a3b8');
+    root.style.setProperty('--surface2','#f0f4f8');
+    root.style.setProperty('--border2','#cbd5e1');
+    document.querySelectorAll('.guest-card,.stat-card,.modal,.loading-box').forEach(el=>el.style.background='');
+  }
+  if (save){
+    localStorage.setItem(THEME_KEY, id);
+    initThemeGrid();
+  }
+}
+
+// Apply saved theme on load
+(function(){
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved && saved !== 'white') applyTheme(saved, false);
+})();
 
 // ════ HELPERS ════
 function showLoading(show,txt='กำลังโหลด...'){document.getElementById('loadingTxt').textContent=txt;document.getElementById('loadingOverlay').classList.toggle('show',show);}
