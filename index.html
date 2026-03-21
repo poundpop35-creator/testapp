@@ -9,7 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#f5f7fa;--surface:#fff;--surface2:#f0f4f8;--border:#e2e8f0;--border2:#cbd5e1;
+  --bg:#eef1f6;--surface:#fff;--surface2:#f0f4f8;--border:#e2e8f0;--border2:#cbd5e1;
   --accent:#1a56db;--accent2:#1e40af;
   --green:#16a34a;--green-bg:#f0fdf4;--green-br:#bbf7d0;
   --yellow:#b45309;--yellow-bg:#fffbeb;--yellow-br:#fde68a;
@@ -59,9 +59,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 #fileInput,#logoFileInput{display:none}
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:16px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.72);z-index:200;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.show{display:flex}
-.modal{background:var(–surface);border:1px solid var(–border);border-radius:16px;padding:28px 24px;width:100%;max-width:440px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:92vh;overflow-y:auto}
+.modal{background:#fff;border:1.5px solid #d1d9e6;border-radius:18px;padding:28px 24px;width:100%;max-width:440px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.35);max-height:92vh;overflow-y:auto}
 .modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(–text3);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
 .modal-close:hover{color:var(–text)}
 .modal-icon{font-size:32px;text-align:center;margin-bottom:8px}
@@ -166,7 +166,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 /* SUMMARY */
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:18px}
-.stat-card{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);overflow:hidden;box-shadow:var(–shadow)}
+.stat-card{background:#fff;border:1.5px solid #c8d3e0;border-radius:var(–rlg);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .stat-header{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(–border)}
 .stat-hotel-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
 .hotel-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -181,11 +181,11 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .stat-val{font-weight:700;font-family:‘IBM Plex Mono’,monospace}
 
 /* CARDS */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px}
-.guest-card{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s;box-shadow:var(–shadow)}
-.guest-card:hover{border-color:var(–accent);box-shadow:var(–shadow-md);transform:translateY(-2px)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.guest-card{background:#fff;border:1.5px solid #c8d3e0;border-radius:14px;overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s;box-shadow:0 2px 10px rgba(0,0,0,.09),0 0 0 1px rgba(0,0,0,.03)}
+.guest-card:hover{border-color:var(–accent);box-shadow:0 6px 24px rgba(26,86,219,.13);transform:translateY(-2px)}
 .guest-card.cancelled{opacity:.6;border-color:var(–red-br)}
-.card-top{padding:13px 14px 10px;border-bottom:1px solid var(–border)}
+.card-top{padding:13px 14px 10px;border-bottom:2px solid #e8edf4;background:#fafcff}
 .card-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
 .seq-badge{font-family:‘IBM Plex Mono’,monospace;font-size:10px;color:var(–text3);background:var(–surface2);padding:2px 7px;border-radius:4px;border:1px solid var(–border)}
 .type-badge{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px}
@@ -201,7 +201,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .rm-lbl{font-size:10px;color:var(–cyan);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
 .rm-name{font-size:13px;font-weight:600}
 .rm-org{font-size:11px;color:var(–text2);margin-top:1px}
-.card-info{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card-info{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fdfefe}
 .ci{display:flex;flex-direction:column;gap:2px}
 .ci.full{grid-column:1/-1}
 .ci-lbl{font-size:10px;color:var(–text3);text-transform:uppercase;letter-spacing:.5px}
