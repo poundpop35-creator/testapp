@@ -53,7 +53,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .abtn-green{background:var(–green);color:#fff}.abtn-green:hover{background:#15803d}
 .abtn-red{background:var(–red);color:#fff}.abtn-red:hover{background:#b91c1c}
 .abtn-purple{background:var(–purple);color:#fff}.abtn-purple:hover{background:#6d28d9}
-.abtn-teal{background:var(–cyan);color:#fff}.abtn-teal:hover{background:#0e7490}
+.abtn-teal{background:#1a56db;color:#fff}.abtn-teal:hover{background:#1e40af}
 .abtn-gray{background:var(–surface);border:1.5px solid var(–border2);color:var(–text2)}.abtn-gray:hover{border-color:var(–accent);color:var(–accent)}
 .admin-status{font-size:11px;color:var(–text2);font-family:‘IBM Plex Mono’,monospace;flex:1;min-width:140px}
 #fileInput,#logoFileInput{display:none}
@@ -79,7 +79,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .primary-btn{width:100%;background:var(–accent);color:#fff;border:none;padding:11px;border-radius:var(–r);font-size:14px;font-family:‘Sarabun’,sans-serif;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px}
 .primary-btn:hover{background:var(–accent2);transform:translateY(-1px)}
 .primary-btn.green{background:var(–green)}.primary-btn.green:hover{background:#15803d}
-.primary-btn.teal{background:var(–cyan)}.primary-btn.teal:hover{background:#0e7490}
+.primary-btn.teal{background:#1a56db}.primary-btn.teal:hover{background:#1e40af}
 .modal-divider{border:none;border-top:1px solid var(–border);margin:16px 0}
 
 /* AUTH TABS */
@@ -95,8 +95,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .event-code-box{display:flex;gap:8px;width:100%;max-width:360px}
 .event-code-input{flex:1;background:var(–surface);border:1.5px solid var(–border);color:var(–text);padding:11px 14px;border-radius:var(–r);font-size:14px;font-family:‘IBM Plex Mono’,monospace;transition:border-color .2s;box-shadow:var(–shadow)}
 .event-code-input:focus{outline:none;border-color:var(–accent)}
-.event-code-btn{background:var(–accent);color:#fff;border:none;padding:11px 20px;border-radius:var(–r);font-size:14px;font-family:‘Sarabun’,sans-serif;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
-.event-code-btn:hover{background:var(–accent2)}
+.event-code-btn{background:#1a56db;color:#fff;border:none;padding:11px 20px;border-radius:var(–r);font-size:14px;font-family:‘Sarabun’,sans-serif;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.event-code-btn:hover{background:#1e40af}
 .event-err{font-size:13px;color:var(–red);margin-top:-10px}
 .event-divider{color:var(–text3);font-size:13px;display:flex;align-items:center;gap:10px;width:100%;max-width:360px}
 .event-divider::before,.event-divider::after{content:’’;flex:1;height:1px;background:var(–border)}
@@ -270,11 +270,11 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
       <div class="event-landing-sub">ใส่รหัสงาน (Event Code) เพื่อดูรายชื่อผู้เข้าพัก<br>หรือเข้าสู่ระบบเพื่อจัดการงานของคุณ</div>
       <div class="event-code-box">
         <input class="event-code-input" id="eventCodeInput" placeholder="รหัสงาน เช่น dmsc2025" autocomplete="off">
-        <button class="event-code-btn" onclick="goToEvent()">เข้าดู</button>
+        <button class="event-code-btn" style="background:#1a56db" onclick="goToEvent()">เข้าดู</button>
       </div>
       <div class="event-err" id="eventErr" style="display:none">ไม่พบงานนี้ กรุณาตรวจสอบรหัสงาน</div>
       <div class="event-divider">หรือ</div>
-      <button class="primary-btn teal" style="max-width:360px;width:100%" onclick="openAuthModal('login')">🔐 Admin — เข้าสู่ระบบ / สมัคร</button>
+      <button class="primary-btn teal" style="max-width:360px;width:100%;background:#1a56db" onclick="openAuthModal('login')">🔐 Admin — เข้าสู่ระบบ / สมัคร</button>
     </div>
   </div>
 </div>
