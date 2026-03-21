@@ -387,7 +387,7 @@ body{transition:background .3s}
     <div class="form-group">
       <label class="form-label">รหัสงาน (Event Code)</label>
       <input class="form-input" id="newEventId" type="text" placeholder="เช่น dmsc2025, hospital-meetup" autocomplete="off">
-      <div class="form-hint">ตัวอักษรภาษาอังกฤษ ตัวเลข และ - เท่านั้น (ห้ามมีช่องว่าง)</div>
+      <div class="form-hint">ภาษาอังกฤษ (ตัวเล็กหรือใหญ่ก็ได้) ตัวเลข และ - เช่น Pp001, DMSC2025, event-01</div>
     </div>
     <div class="form-group">
       <label class="form-label">ชื่องาน</label>
@@ -397,7 +397,7 @@ body{transition:background .3s}
       <label class="form-label">คำบรรยาย</label>
       <input class="form-input" id="newEventSub" type="text" placeholder="เช่น รายชื่อผู้เข้าพักและรถรับส่ง">
     </div>
-    <div class="form-error" id="createEventErr" style="margin-bottom:8px"></div>
+    <div id="createEventErr" style="display:none;color:#dc2626;font-size:13px;margin-bottom:8px;font-family:Sarabun,sans-serif"></div>
     <button class="primary-btn teal" onclick="createEvent()">✨ สร้างงาน</button>
   </div>
 </div>
@@ -719,19 +719,22 @@ function openCreateEvent(){
   document.getElementById('newEventId').value='';
   document.getElementById('newEventName').value='';
   document.getElementById('newEventSub').value='';
-  document.getElementById('createEventErr').textContent='';
-  document.getElementById('createEventErr').classList.remove('show');
   openModal('createEventModal');
 }
 
 async function createEvent(){
-  const id = document.getElementById('newEventId').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const rawId = document.getElementById('newEventId').value.trim();
+  const id = rawId.replace(/\s+/g,'-'); // ไม่บังคับ lowercase แล้ว
   const name = document.getElementById('newEventName').value.trim();
   const sub = document.getElementById('newEventSub').value.trim();
   const err = document.getElementById('createEventErr');
-  err.textContent='';err.classList.remove('show');
-  if (!id||!name){err.textContent='กรุณากรอกรหัสงานและชื่องาน';err.classList.add('show');return;}
-  if (!/^[a-z0-9\-_]+$/.test(id)){err.textContent='รหัสงานใช้ได้เฉพาะ a-z 0-9 และ - เท่านั้น';err.classList.add('show');return;}
+  err.textContent='';err.style.display='none';
+
+  function showErr(msg){ err.textContent=msg; err.style.display='block'; err.style.color='#dc2626'; err.style.fontSize='13px'; err.style.marginBottom='8px'; }
+
+  if (!id){showErr('กรุณากรอกรหัสงาน');return;}
+  if (!name){showErr('กรุณากรอกชื่องาน');return;}
+  if (!/^[a-zA-Z0-9\-_]+$/.test(id)){showErr('รหัสงานใช้ได้เฉพาะ a-z A-Z 0-9 และ - (ห้ามมีช่องว่าง)');return;}
 
   showLoading(true,'กำลังสร้างงาน...');
   try {
