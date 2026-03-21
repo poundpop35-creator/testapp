@@ -286,6 +286,56 @@ body{transition:background .3s}
   </div>
 </div>
 
+<!-- ══ MODAL: HELP / HOW TO USE ══ -->
+
+<div class="modal-overlay" id="helpModal">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('helpModal')">✕</button>
+    <div class="modal-icon">📖</div>
+    <div class="modal-title">วิธีใช้งาน</div>
+    <div class="modal-sub">คู่มือสำหรับ Admin</div>
+
+```
+<div style="display:flex;flex-direction:column;gap:12px">
+
+  <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:14px 16px">
+    <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:8px">🔐 ขั้นตอนที่ 1 — เข้าสู่ระบบ</div>
+    <div style="font-size:13px;color:#1e293b;line-height:1.8">กดปุ่ม <b>Admin</b> มุมขวาบน → ใส่ Username + Password → กด <b>เข้าสู่ระบบ</b><br>หรือ <b>สมัครใช้งาน</b> ถ้ายังไม่มีบัญชี</div>
+  </div>
+
+  <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px 16px">
+    <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:8px">📋 ขั้นตอนที่ 2 — เลือกหรือสร้างงาน</div>
+    <div style="font-size:13px;color:#1e293b;line-height:1.8">หลัง login จะเห็นรายการงาน → เลือกงานที่มีอยู่ หรือกด <b>✨ สร้างงานใหม่</b><br>ตั้งรหัสงาน เช่น <code style="background:#e2e8f0;padding:1px 5px;border-radius:3px">dmsc2025</code></div>
+  </div>
+
+  <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px">
+    <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:8px">📂 ขั้นตอนที่ 3 — เตรียมและอัปโหลด Excel</div>
+    <div style="font-size:13px;color:#1e293b;line-height:1.8;margin-bottom:10px">ดาวน์โหลดไฟล์ตัวอย่าง กรอกข้อมูลผู้เข้าพัก แล้วกดปุ่ม <b>📂 โหลด Excel</b></div>
+    <button onclick="downloadTemplate()" style="background:#b45309;color:#fff;border:none;padding:9px 18px;border-radius:7px;font-size:13px;font-family:'Sarabun',sans-serif;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s" onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
+      📥 ดาวน์โหลด Template Excel
+    </button>
+  </div>
+
+  <div style="background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px 16px">
+    <div style="font-size:13px;font-weight:700;color:#6d28d9;margin-bottom:8px">☁️ ขั้นตอนที่ 4 — บันทึกและแชร์</div>
+    <div style="font-size:13px;color:#1e293b;line-height:1.8">ตรวจสอบข้อมูลแล้วกด <b>☁️ บันทึกขึ้น Cloud</b><br>จากนั้นกดปุ่ม <b>📤 แชร์</b> เพื่อส่งลิงก์ให้ผู้เข้าพัก</div>
+  </div>
+
+  <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:12px 16px">
+    <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:4px">💡 เคล็ดลับ</div>
+    <div style="font-size:12px;color:#1e293b;line-height:1.8">
+      • ถ้ายกเลิกห้อง: ใส่ <b>(ยกเลิกห้อง)</b> ต่อท้ายชื่อในคอลัมน์ ชื่อ-สกุล<br>
+      • พักคู่: กรอกข้อมูลรูมเมทในคอลัมน์ <b>__1</b><br>
+      • อัปเดตข้อมูล: โหลด Excel ใหม่แล้วบันทึกทับได้เลย
+    </div>
+  </div>
+
+</div>
+```
+
+  </div>
+</div>
+
 <!-- ══ MODAL: AUTH ══ -->
 
 <div class="modal-overlay" id="authModal">
@@ -458,6 +508,7 @@ body{transition:background .3s}
     <span class="admin-lbl" id="adminRoleLbl">⚙️ Admin</span>
     <div class="vsep"></div>
     <button class="abtn abtn-teal" onclick="openEventSelect()">📋 เปลี่ยนงาน</button>
+    <button class="abtn abtn-gray" onclick="downloadTemplate()" title="ดาวน์โหลดไฟล์ตัวอย่าง">📥 Template</button>
     <button class="abtn abtn-blue" onclick="document.getElementById('fileInput').click()">📂 โหลด Excel</button>
     <input type="file" id="fileInput" accept=".xlsx,.xls"/>
     <span class="admin-status" id="adminStatus">ยังไม่ได้โหลดไฟล์</span>
@@ -467,6 +518,7 @@ body{transition:background .3s}
     <div class="vsep" id="superSep" style="display:none"></div>
     <button class="abtn abtn-purple" id="manageUsersBtn" style="display:none" onclick="openUserModal()">👥 Admin</button>
     <button class="abtn abtn-gray"   id="settingsBtn"    style="display:none" onclick="openSettingsModal()">🎨 ตั้งค่า</button>
+    <button class="abtn abtn-gray" onclick="openModal('helpModal')">📖 วิธีใช้</button>
   </div>
 </div>
 
@@ -1181,6 +1233,22 @@ function applyTheme(id, save){
   const saved = localStorage.getItem(THEME_KEY);
   if (saved && saved !== 'white') applyTheme(saved, false);
 })();
+
+
+// ════ TEMPLATE DOWNLOAD ════
+function downloadTemplate(){
+  const b64 = "UEsDBBQAAAAIALpFdVxGx01IlQAAAM0AAAAQAAAAZG9jUHJvcHMvYXBwLnhtbE3PTQvCMAwG4L9SdreZih6kDkQ9ip68zy51hbYpbYT67+0EP255ecgboi6JIia2mEXxLuRtMzLHDUDWI/o+y8qhiqHke64x3YGMsRoPpB8eA8OibdeAhTEMOMzit7Dp1C5GZ3XPlkJ3sjpRJsPiWDQ6sScfq9wcChDneiU+ixNLOZcrBf+LU8sVU57mym/8ZAW/B7oXUEsDBBQAAAAIALpFdVwqB23E7wAAACsCAAARAAAAZG9jUHJvcHMvY29yZS54bWzNks9OwzAMh18F5d66f9iEoq4XECeQkJgE4hY53hataaPEqN3bk4atE4IH4Bj7l8+fJTfoJA6eXvzgyLOhcDPZrg8S3UYcmJ0ECHggq0IeE31s7gZvFcen34NTeFR7gqoo1mCJlVasYAZmbiGKttEo0ZPiwZ/xGhe8+/RdgmkE6shSzwHKvATRzhPdaeoauAJmGJO34btAeiGm6p/Y1AFxTk7BLKlxHPOxTrm4Qwnvz0+vad3M9IFVjxR/BSP55GgjLpPf6vuH7aNoq6JaZ0WdVeW2uJO3K7mqP2bXH35XYTtoszP/2Pgi2Dbw6y7aL1BLAwQUAAAACAC6RXVcmVycIxAGAACcJwAAEwAAAHhsL3RoZW1lL3RoZW1lMS54bWztWltz2jgUfu+v0Hhn9m0LxjaBtrQTc2l227SZhO1OH4URWI1seWSRhH+/RzYQy5YN7ZJNups8BCzp+85FR+foOHnz7i5i6IaIlPJ4YNkv29a7ty/e4FcyJBFBMBmnr/DACqVMXrVaaQDDOH3JExLD3IKLCEt4FMvWXOBbGi8j1uq0291WhGlsoRhHZGB9XixoQNBUUVpvXyC05R8z+BXLVI1lowETV0EmuYi08vlsxfza3j5lz+k6HTKBbjAbWCB/zm+n5E5aiOFUwsTAamc/VmvH0dJIgILJfZQFukn2o9MVCDINOzqdWM52fPbE7Z+Mytp0NG0a4OPxeDi2y9KLcBwE4FG7nsKd9Gy/pEEJtKNp0GTY9tqukaaqjVNP0/d93+ubaJwKjVtP02t33dOOicat0HgNvvFPh8Ouicar0HTraSYn/a5rpOkWaEJG4+t6EhW15UDTIABYcHbWzNIDll4p+nWUGtkdu91BXPBY7jmJEf7GxQTWadIZljRGcp2QBQ4AN8TRTFB8r0G2iuDCktJckNbPKbVQGgiayIH1R4Ihxdyv/fWXu8mkM3qdfTrOa5R/aasBp+27m8+T/HPo5J+nk9dNQs5wvCwJ8fsjW2GHJ247E3I6HGdCfM/29pGlJTLP7/kK6048Zx9WlrBdz8/knoxyI7vd9lh99k9HbiPXqcCzIteURiRFn8gtuuQROLVJDTITPwidhphqUBwCpAkxlqGG+LTGrBHgE323vgjI342I96tvmj1XoVhJ2oT4EEYa4pxz5nPRbPsHpUbR9lW83KOXWBUBlxjfNKo1LMXWeJXA8a2cPB0TEs2UCwZBhpckJhKpOX5NSBP+K6Xa/pzTQPCULyT6SpGPabMjp3QmzegzGsFGrxt1h2jSPHr+BfmcNQockRsdAmcbs0YhhGm78B6vJI6arcIRK0I+Yhk2GnK1FoG2camEYFoSxtF4TtK0EfxZrDWTPmDI7M2Rdc7WkQ4Rkl43Qj5izouQEb8ehjhKmu2icVgE/Z5ew0nB6ILLZv24fobVM2wsjvdH1BdK5A8mpz/pMjQHo5pZCb2EVmqfqoc0PqgeMgoF8bkePuV6eAo3lsa8UK6CewH/0do3wqv4gsA5fy59z6XvufQ9odK3NyN9Z8HTi1veRm5bxPuuMdrXNC4oY1dyzcjHVK+TKdg5n8Ds/Wg+nvHt+tkkhK+aWS0jFpBLgbNBJLj8i8rwKsQJ6GRbJQnLVNNlN4oSnkIbbulT9UqV1+WvuSi4PFvk6a+hdD4sz/k8X+e0zQszQ7dyS+q2lL61JjhK9LHMcE4eyww7ZzySHbZ3oB01+/ZdduQjpTBTl0O4GkK+A226ndw6OJ6YkbkK01KQb8P56cV4GuI52QS5fZhXbefY0dH758FRsKPvPJYdx4jyoiHuoYaYz8NDh3l7X5hnlcZQNBRtbKwkLEa3YLjX8SwU4GRgLaAHg69RAvJSVWAxW8YDK5CifEyMRehw55dcX+PRkuPbpmW1bq8pdxltIlI5wmmYE2eryt5lscFVHc9VW/Kwvmo9tBVOz/5ZrcifDBFOFgsSSGOUF6ZKovMZU77nK0nEVTi/RTO2EpcYvOPmx3FOU7gSdrYPAjK5uzmpemUxZ6by3y0MCSxbiFkS4k1d7dXnm5yueiJ2+pd3wWDy/XDJRw/lO+df9F1Drn723eP6bpM7SEycecURAXRFAiOVHAYWFzLkUO6SkAYTAc2UyUTwAoJkphyAmPoLvfIMuSkVzq0+OX9FLIOGTl7SJRIUirAMBSEXcuPv75Nqd4zX+iyBbYRUMmTVF8pDicE9M3JD2FQl867aJguF2+JUzbsaviZgS8N6bp0tJ//bXtQ9tBc9RvOjmeAes4dzm3q4wkWs/1jWHvky3zlw2zreA17mEyxDpH7BfYqKgBGrYr66r0/5JZw7tHvxgSCb/NbbpPbd4Ax81KtapWQrET9LB3wfkgZjjFv0NF+PFGKtprGtxtoxDHmAWPMMoWY434dFmhoz1YusOY0Kb0HVQOU/29QNaPYNNByRBV4xmbY2o+ROCjzc/u8NsMLEjuHti78BUEsDBBQAAAAIALpFdVwK7Afs7gcAAMk8AAAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1s7Vtbc5s4FP4rjHdmp31ILAEC01xmtklae3vLtLO7jx0Sk4SpbbyY1O3++gV0hHVAIBk7m7SzL8FgHZ2rzvdJxMfrJP2yuouizPo2ny1WJ4O7LFu+GA5X13fRPFwdJstokX9zk6TzMMtv09vhaplG4bQUms+GNiHecB7Gi8HpcfnsMj09Tu6zWbyILlNrdT+fh+n3l9EsWZ8M6EA8+Bjf3mXFg+Hp8TK8jT5F2R/LyzS/G1azTON5tFjFycJKo5uTwW/0xaVfjC8H/BlH65X02So8uUqSL8XNZHoyIINi5kVkff+0nMWlLitLlm+jm+wsms3y+eyBFV5n8dfoMh92MrhKsiyZF9/nVmZhlj+6SZN/okWpM5pF+djclmVjMJ8EJi1c/BvsHVTuFEbJn4Xlr8q45nG6ClfRWTL7K55mdyeD0cCaRjfh/Sz7mKzHEcSKFfNdJ7NV+ddaV2Ov71e5MSCbGzCPF/wafoMQS+PtNgEbBOyagNMm4ICAU9dgtwi4IOCaCjAQYKY+eCDg1X3wWgR8EPBNTRqBwKgu0KYhAIGgJkDdtsQRkTlSF2nNdZXsRrZJm4hIN23ku1VEJJzWM95umEg5beS8VUQkndaz3m6YSDst8z7ka6RcYOdhFp4ep8naSsvxxUJyq3mqpZX3iutiRLl8eas4GcSLool9ytL82zifMDv99RfHs+lRcXFYeSEuv3PKCyVHx8Mst6AYPryGSV9qJ2UBTBOUF+aVFzs4sg6s8lP5gI24TpccgSEKZWcGHvjcdKwMPBiVmgJw0hUjFZrODdyypeiISUE9KITIQRwJ/87xZdMIk0cyX5qMjapQNTXs6uCFPpSUT0O5Joe76474Q09ySeQOFIIAHymcYD4aIldWIa6w8NWDVdbnz1Sh7/XDFJda2finqi+1jxN9QBmRKkbM6wZyGVFfVRy/6+eGSrWxr75cjRvPFSre6FWIiOOlQeQ08JCJcIJPxEMry5HlbE8KfItpb829d6QgFBlTzPbOoBWAh1SOnrI/gPmb2lAWjKWsV2unknhvkC9YDB5aNqzWPRRzf3hKIRINrTMal8bdjOLOPJJrWTSDqoNiTcOce1QExOYEZMMVmwTELm2yS5uKPdXX07xvfJXZBB/hdOUwUJgLIaXQ3tzaEF5YvBFAWxXcRhm8M70ZyjKlyCihn8h30I4CTK1Qk3BQOycymlYNJJCHUDWF0TphaIWKPciZbFkPdYiXvNgEX1p5tOpYKjLQ7cyBCs+3FxlvLzLpFnkXT0NrnGTRzHp/G87XyeJ2HS5UgGYQ0UACLUGvIIWM8TCP5CGizynL442xQuLJcwvOgSpQalD0wFMhVrc24h06JGdtxC+uMP+hCqt6Ngh1I8YsqgIHGYcIQ/VbcUiFvC0HxiNH1jMpT3n0nqtAq9ufZyR4fjBiHj1wbUcV1w8940Gw6QQBIqYl0D5d6HQYLX05Hk5FFrnrmAnlkKiKwKXeAyVrshEl2HAoC9yzZsnV1ffelAJBm6OHNqf0wpWgza5BGx/BTDNV8XHEFgSfk/EOssACX8pCIW41AiTquBv99JYKo1izYEBFk9A0nSEYJwO5MmEkX3DA3rffEuEmiSi5EGdoFlo1MhWi6gOzX4UXclWZw6xo1YKLKud+tWU9SvgsV1mdQfCNN8ooRKGRURVm643ajXjVTrhADgKlBsqxwXLYetJJ96TmtMGgQvZLG4wV7oU2dGszpw09i/3J0oZuf/S0oWc8nhBt0Hvw6LTB1dMGt/TCk2iDU6MNfIS/l8p18W4ZL3eIAUVL06Rpn+lNfBy+UDU0tPmk6DvxELyWi0R5TFrtxwN5gbOulnmujc/OKi7kOtr7frw8dALuxVBG8PELPiwWrZ415VqONV91B0q5yd9eZLy9yKRb5HUaLqbWx/j6bp7kH0rcVmG1QZL2i9XGCrfDav9gpMLqbm3mWN2z49kIW3CDF81NrHZXDixuJIjYNgEcIIoq1iusohzClZDd7VYJ2S4bBQe5TlV4P/QMywNDtgqa9ZY+OjQzPTSzxo7erUEz67ejxwfuIqI++OnKCCR6vy0LMvWuXW+NXd+YSGXiEbl3i7aC3mEJg9Hpuo1eM9JAmqzltXAgLcGaBjBC0XH4e49dgVgbot2BmD3gjr1nvSlPkIQV6CCJunIaNi9MpLfpohUSlP7N+2EVRv9fmbqyGT98ZU66VZhyGIP63i+HMVa4Fw7Trc2cw2y5VH8UDtPtlp7D9AzLI3AYvaWPzmE8PYfxSi9GEodhNQ7DRwRbFyoqFxHKqhbRSYJTa06bVVq+pHi2mba2LUWJEt+1/QePql7P9N7tepyMQJGh0weC/Fdj47newl1VXMhF8J+8q+/2SbmN315kvL3IpFvE/NDdIKL7BUFjhXs5dO/WZg6CPXvLkz107/ZHf+jeMx5P6NBd78Gjo6KvR0W/sbP3aqjo99xpoT0K7Nptqtg/VXTeU2CLuo+f6Y36UV7LwxE8bPdchP2MibWsgkt9DHrPfeE/4Na9Z0HVdgA4ry5a7MJFFHZWsRQV6P40BVX7j1iAjFpLU8ZgrI1B/7kn3XOb0w2Dwtwv3TBWuBe60a3NnG5sucaePN3o9kdPN3rG4wnRDYNu/2h0Yyj9BK/4ke+7ML2NFytrFt3k1pJDPzc75cyD32TJsvx/fP7rWv6DvSicRmkxIP/+Jsl7AdwUP/Srfr18+i9QSwMEFAAAAAgAukV1XJ42AveOBQAAeSEAABgAAAB4bC93b3Jrc2hlZXRzL3NoZWV0Mi54bWzVWltv2zYU/iuEBwwNEFu8iLrUjoElw9A+tAhadHssFJtxhMqSJylzC+zHj5JImVRokXEcoHsJQ4k8l+98h4ekvNgX5bfqgbEafN9meXU1eajr3VvPq1YPbJtUs2LHcv7mvii3Sc275cardiVL1u2kbeZhCANvm6T5ZLlon92Wy0XxWGdpzm5LUD1ut0n545plxf5qgibywad081A3D7zlYpds2GdWf9ndlrzn9VLW6ZblVVrkoGT3V5Pf0NsbFDYT2hF/pmxfKf+DxpW7ovjWdN6vryawsYhlbFU3IhLe/MNuWJY1krgdfwuhk15nM1H9X0r/o3WeO3OXVOymyP5K1/XD1SSagDW7Tx6z+lOxf8eEQ7SRtyqyqv0L9t1YAidg9VjVxVZM5hZs07xrk+8CCGUC9o9MwGICHkygxzQQMYG0jnaWtW79ntTJclEWe1C2oxvzSSCl9A5xFFfNiBY03ud6+OM0bwL8uS7565RLrJe//kJo7M95E5C4bWjQNrjt0ShSegFG3UjSNihsG9i9C+B84dXc2EawtxL6r+36A9xphF1DfFUqwSapNw5eCcsJVR2A4mGnCkFVI4rmwAPtKKq6iYkqAUUqSt1UGqOBlR4PUB8l3EUJ4+NRwq0/ZAwkpLoDfS0QZuitQmmMVaF+5xrqNFEq48AxieMoNgZiXAe6BPgSkEswm81GACJ2gIjdlyMsBlNwIBmNhKtQ8tkEnIOyFwNn1dFngK/yTuRKl3q9zwcCtwaguWKjpEo4B/8CJc9o+FR8D0+kpbsGXSddGsJxBm+eJwCHqn6xzvAMulBzT1uFAhiaTR7hlG/nlG9POm2FkzYRFbEYDVYtE6Gsms5AKLs3tCM9ilXDkUYvCa22MGKkkU11f0BSqOElvYjVh2IIGjqhBY/ag0edISWquyKiIobCF6hZT0I12notoKEijEZaqdQ1vJgz7g6ezhkHHU5BvwQHC/opocFlqmGEeqRbATqePYtibfUJzJhp9Ans9Ams2SKARP0+RAU5UAgjTZO5o5JfujRYuVRQm+mm+FstPEP8HVAYmqqoglqgRWRknSJyM2WSIDdnPuqLyPHBruoUSLTd2aB06hkpVyX6dJ5lVxfaSRa28Ibn37R8/YpMlLHqO1L7tXVP8hep7yS5Qsl7E5tOd9ddb7vZkIDIykI0+534djG6GTqdheoid9ghTUd4FNl5FFnjekrROUIiu7JXJdHr+PoMgo3wgmJ1MA0Mjj8v9rE99rE9qf4/+5wjlLP6+LqUewWIf0KuNZclNrI1Y045RPhahiEjzNd24WfY0ViUfEjXCXhX1CwDHzfJdl/km32Sj6GGHFATt1FoBDbtQNwn1JGTsBE9ByVmzsCn3O0vx8buj25sKhFEgsEi8Fjb+opiT7UKLIYQl208crg4Q9gOi1zv9C081BYP7WAj9xWB2jtgpSfdWMwcjDt3zBxUau4NxOqn9EOJAGgadMHut1TBfIow8ccC6HCxh4h78hAlh5p10oi5g7xzY25RCYMZgXxHD8OmFSiP3Ycih8sr5DsEGqtVSCwzxnMtNty9Py3fwEyNF5YFB0fOHTAHlcbbVzN2+gaAygVOxQWKnBke5AzzsZqHARTXq/I6IZpfjBHH4eIMUQfneyfanq96dji1GaPpIP3c0bSofAPji2lEAzT1MQnG0HO4N0LBz5R2g4PwsQxzsPncMXFQacwwqCcD1AioF2LxtUPcD8Y6O0OtVPSHE/GtQqv9PECjOeVw0YNCu7v6nafutSxwoZpo/pEPqg66zh1NB5XGPZN+tXNQAkSoQVbc3f04uYB0cfKU7+LNjxI+JOUmzSuQsXtuLZyFfH0ou4h1nbrYtZ/O74qaR7P7is6SNSubAfz9fcEPCKLTfH3vf22x/A9QSwMEFAAAAAgAukV1XF8XJp5UAwAAvhQAAA0AAAB4bC9zdHlsZXMueG1s3VjtbtowFH2VKA+wAKFZMgESZUWatE2V1h/7a4gDlpw4c0wHffr52iEJxbejW9S1C6pi3+tz7vH1R+xOKnXg9NuWUuXtc15UU3+rVPkhCKr1luakeidKWmhPJmROlK7KTVCVkpK0AlDOg9FgEAU5YYU/mxS7fJmryluLXaGm/sAPZpNMFK0l9K1BNyU59e4Jn/oLwtlKMtOW5IwfrHkEhrXgQnpKS6FTfwiW6sG6h7YGKmuenBVCgjGwER7HmUtGOPhXNUMbQG5WWu1gaZ7zKL8jbFoPOq3Nq9IoxnnT/9i3htmkJEpRWSx1xWCM8czl1eW7Q6kTsJHkMBxd+RcDKsFZCiE3i24/h/Or6OO1oelA/5L0Zrxc3sT9k47tiPRIqsc4vhn3Tnoz7p80XibLOUpqXnqKrYRMqWwm2cg/mmYTTjOl4ZJttvBWooQFIJQSuS6kjGxEQcwMPCK6SM9sD1Nfbc3yPlksC/MYbdC0jnEhwrQ1ci4E6JZH3RcibONOx+qCzteacv4NSL5nTdKGmmqfeXYH+5TC5uXBCj4WdabroqWxFQjUZbPcXdrRH/F6JbsX6nqnu1CY+o+dUPRW0oztTX2fNQIw9mHLPuqyazspS36Yc7Ypcmo7f3HA2YQccd5WSPago8Het9YGKn3vnkrF1l3LT0nKO7pX9Y4b7DNc86jVHP5Dza9LJiyvHhM7fhuJfQGZPSf26m0k9gVk9pzY6G0k9gVk9pHYV/JdeEZi37+uxAb1N75zkDg5RjRWD+4KU/8r3J14q8Fb7RhXrKhrW5amtDg7TWh6RVb6cnbCr9unNCM7ru4a59Rvy19oynZ50rS6hbzUrdryZzh+DaPmAqRjsSKle5ou6qo+T52cRO0DgMee9tJ07sEw1uf2gA+LgynAMBaFxfmf+hOj/bE+TFvs9MQoJkYxFuXyLMwPi+PGJPpx9zRJwjCKsIzaw/+ZggWWtyiCPzcbpg0QWByI9Lxc46ONz5Cn5wE2pk/NEKyn+EzEeornGjzuvAEiSdyjjcUBBDYK2NyB+O44MKfcmDA8Xild2rAVjHuSBPPAXHTP0ShCshPBzz0+2CoJwyRxe8DnVhCGmAdWI+7BFIAGzBOG5jv46HsUHL9TQfsfy9kvUEsDBBQAAAAIALpFdVyXirscwAAAABMCAAALAAAAX3JlbHMvLnJlbHOdkrluwzAMQH/F0J4wB9AhiDNl8RYE+QFWog/YEgWKRZ2/r9qlcZALGXk9PBLcHmlA7TiktoupGP0QUmla1bgBSLYlj2nOkUKu1CweNYfSQETbY0OwWiw+QC4ZZre9ZBanc6RXiFzXnaU92y9PQW+ArzpMcUJpSEszDvDN0n8y9/MMNUXlSiOVWxp40+X+duBJ0aEiWBaaRcnToh2lfx3H9pDT6a9jIrR6W+j5cWhUCo7cYyWMcWK0/jWCyQ/sfgBQSwMEFAAAAAgAukV1XCp8xPKYAQAAAwMAAA8AAAB4bC93b3JrYm9vay54bWy1ks9KHTEUxl9lyAM414sKvThulKpQWtHiPnfmjHMwf4Yk11tdtcVFFR9ApRRs6bILtWDmbc6jmGQYvFAo3XSVnO+Ek9/3JetzbY6nWh9nH6RQtmCNc+0kz23ZgOR2SbegQqfWRnIXSnOU29YAr2wD4KTIx6PRWi45KraxPszaM/lioR2UDrUKYhQOEeb2pR/L7AQtTlGgOy1Y2gtgmUSFEs+gKtiIZbbR8x1t8Ewrx8VBabQQBVvuG4dgHJZ/yAcR8j2f2qQ4Pt3nAaRga6MwsEZjXTqR5vPAeALhcF/NnH6NwoHZ4g62jZ61qI7imOAiX7CRchjWPsSJ+ZcYdV1jCVu6nElQrs/RgIiAyjbYWpYpLqFg5H+QfyD/nfwl+SfqvpD/Rf4r+Y66C+o+kv8cN/HMN/L35D9F9wFnt+qTcMHCQq5mgqFhdqtk5n+Cn5N/TLDX5H+Tvx18nCfxZ4K9I39D3dUC8vgvyOOU/xB6BTUqqN6G62zQwwco90wWl2R9vLK6/Co89EyIzaC9U280r4Y3HP7fxjNQSwMEFAAAAAgAukV1XI33LFq0AAAAiQIAABoAAAB4bC9fcmVscy93b3JrYm9vay54bWwucmVsc8WSTQqDMBBGrxJygI7a0kVRV924LV4g6PiD0YTMlOrta3WhgS66ka7CNyHvezCJH6gVt2agprUkxl4PlMiG2d4AqGiwV3QyFof5pjKuVzxHV4NVRadqhCgIruD2DJnGe6bIJ4u/EE1VtQXeTfHsceAvYHgZ11GDyFLkytXIiYRRb2OC5QhPM1mKrEyky8pQwr+FIk8oOlCIeNJIm82avfrzgfU8v8WtfYnr0N/J5eMA3s9L31BLAwQUAAAACAC6RXVcbqckvB4BAABXBAAAEwAAAFtDb250ZW50X1R5cGVzXS54bWzFlM9OwzAMxl+lynVqMnbggNZdgCvswAuE1l2j5p9ib3Rvj9tuk0CjYioSl0aN7e/n+IuyfjtGwKxz1mMhGqL4oBSWDTiNMkTwHKlDcpr4N+1U1GWrd6BWy+W9KoMn8JRTryE26yeo9d5S9tzxNprgC5HAosgex8SeVQgdozWlJo6rg6++UfITQXLlkIONibjgBKGuEvrIz4BT3esBUjIVZFud6EU7zlKdVUhHCyinJa70GOralFCFcu+4RGJMoCtsAMhZOYoupsnEE4bxezebP8hMATlzm0JEdizB7bizJX11HlkIEpnpI16ILD37fNC7XUH1SzaP9yOkdvAD1bDMn/FXjy/6N/ax+sc+3kNo//qq96t02vgzXw3vyeYTUEsBAhQDFAAAAAgAukV1XEbHTUiVAAAAzQAAABAAAAAAAAAAAAAAAIABAAAAAGRvY1Byb3BzL2FwcC54bWxQSwECFAMUAAAACAC6RXVcKgdtxO8AAAArAgAAEQAAAAAAAAAAAAAAgAHDAAAAZG9jUHJvcHMvY29yZS54bWxQSwECFAMUAAAACAC6RXVcmVycIxAGAACcJwAAEwAAAAAAAAAAAAAAgAHhAQAAeGwvdGhlbWUvdGhlbWUxLnhtbFBLAQIUAxQAAAAIALpFdVwK7Afs7gcAAMk8AAAYAAAAAAAAAAAAAACAgSIIAAB4bC93b3Jrc2hlZXRzL3NoZWV0MS54bWxQSwECFAMUAAAACAC6RXVcnjYC944FAAB5IQAAGAAAAAAAAAAAAAAAgIFGEAAAeGwvd29ya3NoZWV0cy9zaGVldDIueG1sUEsBAhQDFAAAAAgAukV1XF8XJp5UAwAAvhQAAA0AAAAAAAAAAAAAAIABChYAAHhsL3N0eWxlcy54bWxQSwECFAMUAAAACAC6RXVcl4q7HMAAAAATAgAACwAAAAAAAAAAAAAAgAGJGQAAX3JlbHMvLnJlbHNQSwECFAMUAAAACAC6RXVcKnzE8pgBAAADAwAADwAAAAAAAAAAAAAAgAFyGgAAeGwvd29ya2Jvb2sueG1sUEsBAhQDFAAAAAgAukV1XI33LFq0AAAAiQIAABoAAAAAAAAAAAAAAIABNxwAAHhsL19yZWxzL3dvcmtib29rLnhtbC5yZWxzUEsBAhQDFAAAAAgAukV1XG6nJLweAQAAVwQAABMAAAAAAAAAAAAAAIABIx0AAFtDb250ZW50X1R5cGVzXS54bWxQSwUGAAAAAAoACgCEAgAAch4AAAAA";
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+  const blob = new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Template_GuestList.xlsx';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('ดาวน์โหลด Template สำเร็จ ✅','เปิดไฟล์แล้วกรอกข้อมูลผู้เข้าพักได้เลย','ok');
+}
 
 // ════ HELPERS ════
 function showLoading(show,txt='กำลังโหลด...'){document.getElementById('loadingTxt').textContent=txt;document.getElementById('loadingOverlay').classList.toggle('show',show);}
