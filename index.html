@@ -36,7 +36,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .chip{padding:3px 9px;border-radius:20px;font-size:11px;border:1px solid;font-family:‘IBM Plex Mono’,monospace;white-space:nowrap}
 .chip-blue{background:#eff6ff;border-color:#bfdbfe;color:var(–accent)}
 .chip-green{background:var(–green-bg);border-color:var(–green-br);color:var(–green)}
-.icon-btn{background:var(–surface);border:1.5px solid var(–border);color:var(–text2);font-size:12px;padding:6px 11px;border-radius:7px;cursor:pointer;transition:all .2s;font-family:‘Sarabun’,sans-serif;display:flex;align-items:center;gap:4px;box-shadow:var(–shadow);white-space:nowrap}
+.icon-btn{background:var(–surface);border:1.5px solid var(–border);color:#1e293b;font-size:12px;font-weight:700;padding:6px 11px;border-radius:7px;cursor:pointer;transition:all .2s;font-family:‘Sarabun’,sans-serif;display:flex;align-items:center;gap:4px;box-shadow:var(–shadow);white-space:nowrap}
 .icon-btn:hover{border-color:var(–accent);color:var(–accent)}
 .icon-btn.warn{border-color:var(–yellow-br);color:var(–yellow);background:var(–yellow-bg)}
 .icon-btn.share{border-color:var(–green-br);color:var(–green);background:var(–green-bg)}
@@ -45,7 +45,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 /* ADMIN BAR */
 .admin-bar{background:var(–yellow-bg);border-bottom:2px solid var(–yellow-br);padding:10px 24px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
 .admin-bar.show{display:flex}
-.admin-lbl{font-size:12px;font-weight:700;color:var(–yellow);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.admin-lbl{font-size:12px;font-weight:800;color:#92400e;white-space:nowrap;display:flex;align-items:center;gap:5px}
 .vsep{width:1px;height:24px;background:var(–border2);flex-shrink:0}
 .abtn{border:none;padding:7px 13px;border-radius:7px;font-size:12px;font-family:‘Sarabun’,sans-serif;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:4px}
 .abtn:hover{transform:translateY(-1px)}.abtn:disabled{opacity:.35;cursor:not-allowed;transform:none}
@@ -54,8 +54,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .abtn-red{background:var(–red);color:#fff}.abtn-red:hover{background:#b91c1c}
 .abtn-purple{background:var(–purple);color:#fff}.abtn-purple:hover{background:#6d28d9}
 .abtn-teal{background:#1a56db;color:#fff}.abtn-teal:hover{background:#1e40af}
-.abtn-gray{background:var(–surface);border:1.5px solid var(–border2);color:var(–text2)}.abtn-gray:hover{border-color:var(–accent);color:var(–accent)}
-.admin-status{font-size:11px;color:var(–text2);font-family:‘IBM Plex Mono’,monospace;flex:1;min-width:140px}
+.abtn-gray{background:var(–surface);border:1.5px solid var(–border2);color:#1e293b;font-weight:700}.abtn-gray:hover{border-color:var(–accent);color:var(–accent)}
+.admin-status{font-size:11px;color:#1e293b;font-weight:600;font-family:‘IBM Plex Mono’,monospace;flex:1;min-width:140px}
 #fileInput,#logoFileInput{display:none}
 
 /* MODAL */
@@ -84,7 +84,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 /* AUTH TABS */
 .auth-tabs{display:flex;background:var(–surface2);border-radius:var(–r);padding:3px;margin-bottom:18px;gap:3px}
-.auth-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:13px;font-family:‘Sarabun’,sans-serif;font-weight:600;cursor:pointer;color:var(–text2);transition:all .2s}
+.auth-tab{flex:1;padding:7px;border:none;background:none;border-radius:6px;font-size:13px;font-family:‘Sarabun’,sans-serif;font-weight:700;cursor:pointer;color:#475569;transition:all .2s}
 .auth-tab.active{background:var(–surface);color:var(–accent);box-shadow:var(–shadow)}
 
 /* EVENT SELECTOR */
@@ -1037,8 +1037,49 @@ function populateFilters(){
   const hf=document.getElementById('hotelFilter');hf.innerHTML='<option value="">ทุกโรงแรม</option>';hotels.forEach(h=>hf.innerHTML+=`<option value="${h}">${h}</option>`);
 }
 function renderSummary(data){
-  const map={};data.forEach(g=>{const h=g.hotel||'ไม่ระบุ';if(!map[h])map[h]={total:0,single:0,twin:0,singlePay:0,cancelled:0};if(g.name1.includes('ยกเลิก'))map[h].cancelled++;else if(g.type==='พักคู่')map[h].twin++;else if(g.type.includes('จ่ายส่วนต่าง'))map[h].singlePay++;else map[h].single++;map[h].total++;});
-  document.getElementById('summaryGrid').innerHTML=Object.entries(map).map(([hotel,s])=>{const color=hotelColors[hotel]||'#64748b';return`<div class="stat-card"><div class="stat-header"><div class="stat-hotel-name"><div class="hotel-dot" style="background:${color}"></div>${hotel}</div><div class="stat-total">รวม ${s.total} ห้อง</div></div><div class="stat-body">${s.single?`<div class="stat-row"><span class="stat-label"><div class="dot-s"></div>พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${s.single}</span></div>`:''} ${s.twin?`<div class="stat-row"><span class="stat-label"><div class="dot-t"></div>พักคู่</span><span class="stat-val" style="color:var(--cyan)">${s.twin}</span></div>`:''} ${s.singlePay?`<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div>พักเดี่ยว+ส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${s.singlePay}</span></div>`:''} ${s.cancelled?`<div class="stat-row"><span class="stat-label"><div class="dot-c"></div>ยกเลิก</span><span class="stat-val" style="color:var(--red)">${s.cancelled}</span></div>`:''}</div></div>`;}).join('');
+  const map={};
+  let totalRooms=0, totalPeople=0;
+  data.forEach(g=>{
+    const h=g.hotel||'ไม่ระบุ';
+    if(!map[h])map[h]={total:0,people:0,single:0,twin:0,singlePay:0,cancelled:0};
+    const cancelled=g.name1.includes('ยกเลิก');
+    if(cancelled){map[h].cancelled++;}
+    else if(g.type==='พักคู่'){map[h].twin++;map[h].people+=2;}
+    else if(g.type.includes('จ่ายส่วนต่าง')){map[h].singlePay++;map[h].people+=1;}
+    else{map[h].single++;map[h].people+=1;}
+    if(!cancelled){map[h].total++;totalRooms++;totalPeople+=g.type==='พักคู่'?2:1;}
+    else map[h].total++;
+  });
+  // Grand total bar
+  const totalBar=`<div style="background:#fff;border:1.5px solid #c8d3e0;border-radius:12px;padding:12px 18px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.07)">
+    <div style="font-size:13px;font-weight:700;color:#1e293b">📊 สรุปรวมทั้งหมด</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-left:auto">
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#1a56db;font-family:'IBM Plex Mono',monospace">${totalRooms}</div><div style="font-size:11px;color:#64748b">ห้องพัก</div></div>
+      <div style="width:1px;background:#e2e8f0;align-self:stretch"></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#16a34a;font-family:'IBM Plex Mono',monospace">${totalPeople}</div><div style="font-size:11px;color:#64748b">คน</div></div>
+      <div style="width:1px;background:#e2e8f0;align-self:stretch"></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#b45309;font-family:'IBM Plex Mono',monospace">${Object.keys(map).length}</div><div style="font-size:11px;color:#64748b">โรงแรม</div></div>
+    </div>
+  </div>`;
+  const cards=Object.entries(map).map(([hotel,s])=>{
+    const color=hotelColors[hotel]||'#64748b';
+    return`<div class="stat-card">
+      <div class="stat-header">
+        <div class="stat-hotel-name"><div class="hotel-dot" style="background:${color}"></div>${hotel}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:11px;color:#64748b;font-family:'IBM Plex Mono',monospace">${s.people} คน</span>
+          <div class="stat-total">${s.total} ห้อง</div>
+        </div>
+      </div>
+      <div class="stat-body">
+        ${s.single?`<div class="stat-row"><span class="stat-label"><div class="dot-s"></div>พักเดี่ยว</span><span class="stat-val" style="color:var(--green)">${s.single} ห้อง · ${s.single} คน</span></div>`:''}
+        ${s.twin?`<div class="stat-row"><span class="stat-label"><div class="dot-t"></div>พักคู่</span><span class="stat-val" style="color:var(--cyan)">${s.twin} ห้อง · ${s.twin*2} คน</span></div>`:''}
+        ${s.singlePay?`<div class="stat-row"><span class="stat-label"><div class="dot-sp"></div>เดี่ยว+ส่วนต่าง</span><span class="stat-val" style="color:var(--yellow)">${s.singlePay} ห้อง · ${s.singlePay} คน</span></div>`:''}
+        ${s.cancelled?`<div class="stat-row"><span class="stat-label"><div class="dot-c"></div>ยกเลิก</span><span class="stat-val" style="color:var(--red)">${s.cancelled}</span></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('summaryGrid').innerHTML=totalBar+'<div style="display:contents">'+cards+'</div>';
 }
 function buildCard(g){
   const ic=g.name1.includes('ยกเลิก'),it=g.type==='พักคู่';
